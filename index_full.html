@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Brain Explorer</title>
+  <meta name="description" content="A student-friendly site about the human brain: learn, quiz, and explore interactives." />
+  <style>
+    :root{
+      --bg:#0f172a;
+      --card:#111827;
+      --muted:#94a3b8;
+      --text:#e5e7eb;
+      --accent:#60a5fa;
+      --accent-2:#34d399;
+      --warn:#f59e0b;
+      --danger:#f87171;
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans",sans-serif;background:linear-gradient(180deg,#0b1023,#0f172a 30%);color:var(--text)}
+    a{color:var(--accent);text-decoration:none}
+    header{position:sticky;top:0;background:rgba(2,6,23,.6);backdrop-filter:blur(6px);border-bottom:1px solid #1f2937;z-index:50}
+    .container{max-width:1100px;margin:0 auto;padding:18px}
+    .nav{display:flex;align-items:center;gap:16px;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:700}
+    .brand .logo{width:36px;height:36px;border-radius:10px;background: radial-gradient(100% 100% at 30% 20%, #60a5fa, #9333ea);box-shadow:0 10px 25px rgba(99,102,241,.35)}
+    .tabs{display:flex;gap:10px;flex-wrap:wrap}
+    .tab-btn{padding:8px 12px;border-radius:999px;background:#0b1222;border:1px solid #1f2a44;color:#cbd5e1;font-size:14px;cursor:pointer}
+    .tab-btn.active{background:linear-gradient(135deg,#1e293b,#0b1222);border-color:#334155;color:#fff;box-shadow:inset 0 0 0 1px #3b82f6}
+    main{padding:32px 18px}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+    .card{grid-column:span 12;background:linear-gradient(180deg,#0b1222,#0b1222);border:1px solid #1f2a44;border-radius:var(--radius);padding:18px;box-shadow:0 10px 25px rgba(2,6,23,.5)}
+    @media(min-width:800px){.card.span-4{grid-column:span 4}.card.span-6{grid-column:span 6}.card.span-8{grid-column:span 8}}
+    .card h3{margin:0 0 8px}
+    .muted{color:var(--muted)}
+    .pill{display:inline-block;padding:4px 10px;border-radius:999px;background:#0b152a;border:1px solid #1e293b;color:#93c5fd;font-size:12px}
+    .hero{display:grid;gap:18px}
+    .hero h1{font-size:clamp(28px,4vw,42px);margin:0}
+    .hero p{margin:0}
+    .btn{appearance:none;border:0;padding:10px 14px;border-radius:12px;background:linear-gradient(135deg,#2563eb,#22c55e);color:white;font-weight:700;cursor:pointer}
+    .btn.secondary{background:#0b152a;border:1px solid #1e293b;color:#cbd5e1}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .list li{margin:6px 0}
+    .kbd{border:1px solid #374151;border-bottom-width:2px;border-radius:6px;padding:0 6px;font-size:12px;color:#e5e7eb}
+    section{display:none}
+    section.active{display:block}
+    .quiz-q{margin:16px 0;padding:14px;border:1px solid #21304d;border-radius:14px}
+    .quiz-q h4{margin:0 0 8px}
+    .choices label{display:block;margin:6px 0;padding:8px;border-radius:10px;border:1px solid #1f2a44;cursor:pointer}
+    .choices input{margin-right:8px}
+    .result{margin-top:12px;font-weight:700}
+    .diagram{width:100%;height:340px;border-radius:16px;background:radial-gradient(120% 90% at 50% 0%,#1a2440,#0b1222);border:1px solid #1f2a44;display:grid;place-items:center;position:relative}
+    .hotspot{position:absolute;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:999px;background:#3b82f6;border:2px solid white;cursor:pointer}
+    .tooltip{position:absolute;bottom:125%;left:50%;transform:translateX(-50%);background:#0b152a;border:1px solid #1e293b;border-radius:10px;padding:8px;white-space:nowrap;display:none}
+    .hotspot:hover .tooltip{display:block}
+    footer{padding:28px 18px;border-top:1px solid #1f2937;color:#94a3b8}
+    input[type="search"]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #1f2a44;background:#0b152a;color:#e5e7eb}
+    .tag{display:inline-block;margin-right:6px;margin-bottom:6px;padding:6px 10px;border-radius:999px;background:#0b152a;border:1px solid #1e293b;color:#a7f3d0;font-size:12px}
+    .small{font-size:12px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand"><div class="logo"></div><span>Brain Explorer</span></div>
+      <div class="tabs" role="tablist" aria-label="Site sections">
+        <button class="tab-btn active" data-tab="home" aria-selected="true">Home</button>
+        <button class="tab-btn" data-tab="learn">Learn</button>
+        <button class="tab-btn" data-tab="quiz">Quizzes</button>
+        <button class="tab-btn" data-tab="interactive">Interactive</button>
+        <button class="tab-btn" data-tab="resources">Resources</button>
+        <button class="tab-btn" data-tab="about">About</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="home" class="active">
+      <div class="grid hero">
+        <div class="card span-8">
+          <span class="pill">Neuroscience for students</span>
+          <h1>Understand your brain — memory, attention, emotion, & more.</h1>
+          <p class="muted">Fast, visual lessons with mini-quizzes and an interactive brain map. Built for middle/high school learners.</p>
+          <div class="row" style="margin-top:12px">
+            <button class="btn" data-nav="learn">Start learning</button>
+            <button class="btn secondary" data-nav="quiz">Try a quiz</button>
+          </div>
+        </div>
+        <div class="card span-4">
+          <h3>Today’s quick facts</h3>
+          <ul class="list">
+            <li>~86 billion neurons in the human brain.</li>
+            <li>The <b>hippocampus</b> helps form new memories.</li>
+            <li>Practice + sleep = stronger synapses.</li>
+          </ul>
+          <div class="row">
+            <span class="tag">#neurons</span>
+            <span class="tag">#memory</span>
+            <span class="tag">#neuroplasticity</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="learn">
+      <div class="grid">
+        <div class="card span-8">
+          <h3>Brain Basics</h3>
+          <p class="muted">Start with the big picture: major lobes and what they do.</p>
+          <div class="grid">
+            <div class="card span-6">
+              <h4>Cerebral Lobes</h4>
+              <ul class="list">
+                <li><b>Frontal</b>: planning, decisions, speech (Broca’s area).</li>
+                <li><b>Parietal</b>: touch, spatial awareness.</li>
+                <li><b>Temporal</b>: hearing, language (Wernicke’s), memory.</li>
+                <li><b>Occipital</b>: vision processing.</li>
+              </ul>
+              <p class="small muted">Tip: A blow to the back of the head can cause visual flashes—occipital cortex at work.</p>
+            </div>
+            <div class="card span-6">
+              <h4>Key Structures</h4>
+              <ul class="list">
+                <li><b>Hippocampus</b>: new memories (think “campus” for learning).</li>
+                <li><b>Amygdala</b>: emotion & fear detection.</li>
+                <li><b>Cerebellum</b>: balance, fine motor skills, timing.</li>
+                <li><b>Brainstem</b>: breathing, heart rate, basic life support.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="card span-4">
+          <h3>Search topics</h3>
+          <input type="search" id="search" placeholder="Try: memory, dopamine, sleep" aria-label="Search topics" />
+          <ul id="searchResults" class="list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="quiz">
+      <div class="grid">
+        <div class="card span-8">
+          <h3>Mini Quiz: Brain Basics (5 Qs)</h3>
+          <form id="quizForm">
+            <div class="quiz-q">
+              <h4>1) Which lobe primarily processes visual information?</h4>
+              <div class="choices">
+                <label><input type="radio" name="q1" value="Frontal"/> Frontal</label>
+                <label><input type="radio" name="q1" value="Temporal"/> Temporal</label>
+                <label><input type="radio" name="q1" value="Parietal"/> Parietal</label>
+                <label><input type="radio" name="q1" value="Occipital"/> Occipital</label>
+              </div>
+              <div class="result" data-for="q1"></div>
+            </div>
+            <div class="quiz-q">
+              <h4>2) The hippocampus is most involved in:</h4>
+              <div class="choices">
+                <label><input type="radio" name="q2" value="Balance"/> Balance</label>
+                <label><input type="radio" name="q2" value="New memories"/> Forming new memories</label>
+                <label><input type="radio" name="q2" value="Vision"/> Vision</label>
+                <label><input type="radio" name="q2" value="Reflexes"/> Reflexes</label>
+              </div>
+              <div class="result" data-for="q2"></div>
+            </div>
+            <div class="quiz-q">
+              <h4>3) Which structure is key for emotion/fear detection?</h4>
+              <div class="choices">
+                <label><input type="radio" name="q3" value="Amygdala"/> Amygdala</label>
+                <label><input type="radio" name="q3" value="Cerebellum"/> Cerebellum</label>
+                <label><input type="radio" name="q3" value="Brainstem"/> Brainstem</label>
+                <label><input type="radio" name="q3" value="Thalamus"/> Thalamus</label>
+              </div>
+              <div class="result" data-for="q3"></div>
+            </div>
+            <div class="quiz-q">
+              <h4>4) Broca’s area helps mainly with:</h4>
+              <div class="choices">
+                <label><input type="radio" name="q4" value="Vision"/> Vision</label>
+                <label><input type="radio" name="q4" value="Speech production"/> Speech production</label>
+                <label><input type="radio" name="q4" value="Balance"/> Balance</label>
+                <label><input type="radio" name="q4" value="Heart rate"/> Heart rate</label>
+              </div>
+              <div class="result" data-for="q4"></div>
+            </div>
+            <div class="quiz-q">
+              <h4>5) Which area is most crucial for basic life functions (breathing/HR)?</h4>
+              <div class="choices">
+                <label><input type="radio" name="q5" value="Cortex"/> Cerebral cortex</label>
+                <label><input type="radio" name="q5" value="Brainstem"/> Brainstem</label>
+                <label><input type="radio" name="q5" value="Hippocampus"/> Hippocampus</label>
+                <label><input type="radio" name="q5" value="Amygdala"/> Amygdala</label>
+              </div>
+              <div class="result" data-for="q5"></div>
+            </div>
+            <div class="row">
+              <button class="btn" type="submit">Check Answers</button>
+              <button class="btn secondary" type="button" id="resetQuiz">Reset</button>
+            </div>
+            <p id="score" class="muted"></p>
+          </form>
+        </div>
+        <div class="card span-4">
+          <h3>Make your own quiz</h3>
+          <p class="muted">Tell me your topics (e.g., neurotransmitters, sleep stages), and I’ll generate more questions.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="interactive">
+      <div class="grid">
+        <div class="card span-8">
+          <h3>Interactive Brain Map (prototype)</h3>
+          <div class="diagram" aria-label="brain diagram placeholder">
+            <div class="hotspot" style="top:55%;left:30%">
+              <span class="tooltip"><b>Frontal lobe</b>: planning & decisions</span>
+            </div>
+            <div class="hotspot" style="top:55%;left:50%">
+              <span class="tooltip"><b>Parietal lobe</b>: touch, spatial</span>
+            </div>
+            <div class="hotspot" style="top:65%;left:70%">
+              <span class="tooltip"><b>Occipital lobe</b>: vision</span>
+            </div>
+            <div class="hotspot" style="top:75%;left:50%">
+              <span class="tooltip"><b>Cerebellum</b>: balance & timing</span>
+            </div>
+          </div>
+          <p class="small muted">We can swap this placeholder for a proper SVG brain and precise hotspots later.</p>
+        </div>
+        <div class="card span-4">
+          <h3>Feature ideas</h3>
+          <ul class="list">
+            <li>Label-the-brain drag & drop</li>
+            <li>Neurotransmitter flashcards</li>
+            <li>Sleep-cycle timeline</li>
+            <li>Reaction time tester</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="resources">
+      <div class="grid">
+        <div class="card span-12">
+          <h3>Resources</h3>
+          <ul class="list">
+            <li>Beginner summaries you write (I’ll help condense and format).</li>
+            <li>Links to reputable sources (when you’re ready to add them).</li>
+            <li>Downloadable worksheets & answer keys (I can generate PDFs).</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="grid">
+        <div class="card span-12">
+          <h3>About This Site</h3>
+          <p class="muted">Made by students, for students. If you spot mistakes or want new topics, use the contact info you’ll add here.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="row" style="justify-content:space-between">
+        <span class="small">© <span id="year"></span> Brain Explorer</span>
+        <span class="small">Built with plain HTML/CSS/JS — easy to host anywhere.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab-btn');
+    const sections = document.querySelectorAll('main section');
+    function show(tab){
+      sections.forEach(s=>s.classList.toggle('active', s.id===tab));
+      tabs.forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+    }
+    tabs.forEach(btn=>btn.addEventListener('click',()=>show(btn.dataset.tab)));
+    document.querySelectorAll('[data-nav]').forEach(x=>x.addEventListener('click',()=>show(x.dataset.nav)));
+
+    const topics = [
+      { term:'memory', text:'Hippocampus helps form new memories; sleep consolidates them.'},
+      { term:'dopamine', text:'A neurotransmitter tied to motivation and reward prediction.'},
+      { term:'sleep', text:'Deep sleep strengthens synapses; REM supports creative linking.'},
+      { term:'amygdala', text:'Key for emotion/fear detection and rapid responses.'},
+      { term:'cerebellum', text:'Coordinates balance, timing, and fine movements.'}
+    ];
+    const search = document.getElementById('search');
+    const results = document.getElementById('searchResults');
+    if(search){
+      search.addEventListener('input',()=>{
+        const q = search.value.trim().toLowerCase();
+        results.innerHTML='';
+        if(!q) return;
+        topics.filter(t=>t.term.includes(q)).forEach(t=>{
+          const li=document.createElement('li');
+          li.innerHTML = `<b>${t.term}</b>: <span class="muted">${t.text}</span>`;
+          results.appendChild(li);
+        });
+      });
+    }
+
+    const key = { q1:'Occipital', q2:'New memories', q3:'Amygdala', q4:'Speech production', q5:'Brainstem' };
+    const form = document.getElementById('quizForm');
+    const resetBtn = document.getElementById('resetQuiz');
+    function grade(){
+      let score = 0; let total = Object.keys(key).length;
+      for(const q in key){
+        const chosen = form.querySelector(`input[name="${q}"]:checked`);
+        const box = form.querySelector(`.result[data-for="${q}"]`);
+        if(!box) continue;
+        if(!chosen){
+          box.textContent = 'Pick an answer';
+          box.style.color = '#f59e0b';
+          continue;
+        }
+        if(chosen.value === key[q]){ score++; box.textContent = 'Correct!'; box.style.color = '#34d399'; }
+        else { box.textContent = `Not quite. Correct: ${key[q]}`; box.style.color = '#f87171'; }
+      }
+      document.getElementById('score').textContent = `Score: ${score}/${total}`;
+    }
+    function resetQuiz(){
+      form.reset();
+      form.querySelectorAll('.result').forEach(r=>{r.textContent=''; r.style.color=''});
+      document.getElementById('score').textContent='';
+    }
+    if(form){
+      form.addEventListener('submit', e=>{ e.preventDefault(); grade(); });
+      resetBtn.addEventListener('click', resetQuiz);
+    }
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
