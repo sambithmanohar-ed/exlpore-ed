@@ -7,14 +7,14 @@
   <meta name="description" content="A student-friendly site about the human brain: learn, quiz, and explore interactives." />
   <style>
     :root{
-      --bg:#0f172a;
-      --card:#111827;
-      --muted:#94a3b8;
-      --text:#e5e7eb;
-      --accent:#60a5fa;
-      --accent-2:#34d399;
-      --warn:#f59e0b;
-      --danger:#f87171;
+      --bg:#0f172a; /* slate-900 */
+      --card:#111827; /* gray-900 */
+      --muted:#94a3b8; /* slate-400 */
+      --text:#e5e7eb; /* gray-200 */
+      --accent:#60a5fa; /* blue-400 */
+      --accent-2:#34d399; /* emerald-400 */
+      --warn:#f59e0b; /* amber-500 */
+      --danger:#f87171; /* red-400 */
       --radius:18px;
     }
     *{box-sizing:border-box}
@@ -44,13 +44,16 @@
     .row{display:flex;gap:12px;flex-wrap:wrap}
     .list li{margin:6px 0}
     .kbd{border:1px solid #374151;border-bottom-width:2px;border-radius:6px;padding:0 6px;font-size:12px;color:#e5e7eb}
+    /* Sections */
     section{display:none}
     section.active{display:block}
+    /* Quiz */
     .quiz-q{margin:16px 0;padding:14px;border:1px solid #21304d;border-radius:14px}
     .quiz-q h4{margin:0 0 8px}
     .choices label{display:block;margin:6px 0;padding:8px;border-radius:10px;border:1px solid #1f2a44;cursor:pointer}
     .choices input{margin-right:8px}
     .result{margin-top:12px;font-weight:700}
+    /* Interactive */
     .diagram{width:100%;height:340px;border-radius:16px;background:radial-gradient(120% 90% at 50% 0%,#1a2440,#0b1222);border:1px solid #1f2a44;display:grid;place-items:center;position:relative}
     .hotspot{position:absolute;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:999px;background:#3b82f6;border:2px solid white;cursor:pointer}
     .tooltip{position:absolute;bottom:125%;left:50%;transform:translateX(-50%);background:#0b152a;border:1px solid #1e293b;border-radius:10px;padding:8px;white-space:nowrap;display:none}
@@ -77,6 +80,7 @@
   </header>
 
   <main class="container">
+    <!-- HOME -->
     <section id="home" class="active">
       <div class="grid hero">
         <div class="card span-8">
@@ -104,6 +108,7 @@
       </div>
     </section>
 
+    <!-- LEARN -->
     <section id="learn">
       <div class="grid">
         <div class="card span-8">
@@ -139,6 +144,7 @@
       </div>
     </section>
 
+    <!-- QUIZ -->
     <section id="quiz">
       <div class="grid">
         <div class="card span-8">
@@ -208,11 +214,13 @@
       </div>
     </section>
 
+    <!-- INTERACTIVE -->
     <section id="interactive">
       <div class="grid">
         <div class="card span-8">
           <h3>Interactive Brain Map (prototype)</h3>
           <div class="diagram" aria-label="brain diagram placeholder">
+            <!-- Hotspots (positions are rough for demo) -->
             <div class="hotspot" style="top:55%;left:30%">
               <span class="tooltip"><b>Frontal lobe</b>: planning & decisions</span>
             </div>
@@ -240,6 +248,7 @@
       </div>
     </section>
 
+    <!-- RESOURCES -->
     <section id="resources">
       <div class="grid">
         <div class="card span-12">
@@ -253,6 +262,7 @@
       </div>
     </section>
 
+    <!-- ABOUT -->
     <section id="about">
       <div class="grid">
         <div class="card span-12">
@@ -273,6 +283,7 @@
   </footer>
 
   <script>
+    // Tab navigation
     const tabs = document.querySelectorAll('.tab-btn');
     const sections = document.querySelectorAll('main section');
     function show(tab){
@@ -282,6 +293,7 @@
     tabs.forEach(btn=>btn.addEventListener('click',()=>show(btn.dataset.tab)));
     document.querySelectorAll('[data-nav]').forEach(x=>x.addEventListener('click',()=>show(x.dataset.nav)));
 
+    // Search demo
     const topics = [
       { term:'memory', text:'Hippocampus helps form new memories; sleep consolidates them.'},
       { term:'dopamine', text:'A neurotransmitter tied to motivation and reward prediction.'},
@@ -304,6 +316,7 @@
       });
     }
 
+    // Quiz logic
     const key = { q1:'Occipital', q2:'New memories', q3:'Amygdala', q4:'Speech production', q5:'Brainstem' };
     const form = document.getElementById('quizForm');
     const resetBtn = document.getElementById('resetQuiz');
@@ -332,6 +345,8 @@
       form.addEventListener('submit', e=>{ e.preventDefault(); grade(); });
       resetBtn.addEventListener('click', resetQuiz);
     }
+
+    // Year
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
