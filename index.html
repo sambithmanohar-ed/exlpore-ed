@@ -4,74 +4,54 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Brain Explorer</title>
-  <meta name="description" content="A student-friendly site about the human brain: learn, quiz, and explore interactives." />
+  <meta name="description" content="Student-friendly neuroscience with lessons, quizzes, flashcards, and an interactive brain map." />
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0f172a">
   <style>
-    :root{
-      --bg:#0f172a; /* slate-900 */
-      --card:#111827; /* gray-900 */
-      --muted:#94a3b8; /* slate-400 */
-      --text:#e5e7eb; /* gray-200 */
-      --accent:#60a5fa; /* blue-400 */
-      --accent-2:#34d399; /* emerald-400 */
-      --warn:#f59e0b; /* amber-500 */
-      --danger:#f87171; /* red-400 */
-      --radius:18px;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
+    :root{ --bg:#0f172a; --muted:#94a3b8; --text:#e5e7eb; --accent:#60a5fa; --accent2:#34d399; --radius:18px; --border:#1f2a44; --panel:#0b1222; }
+    *{box-sizing:border-box} html,body{height:100%}
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans",sans-serif;background:linear-gradient(180deg,#0b1023,#0f172a 30%);color:var(--text)}
     a{color:var(--accent);text-decoration:none}
     header{position:sticky;top:0;background:rgba(2,6,23,.6);backdrop-filter:blur(6px);border-bottom:1px solid #1f2937;z-index:50}
     .container{max-width:1100px;margin:0 auto;padding:18px}
     .nav{display:flex;align-items:center;gap:16px;justify-content:space-between}
     .brand{display:flex;align-items:center;gap:10px;font-weight:700}
-    .brand .logo{width:36px;height:36px;border-radius:10px;background: radial-gradient(100% 100% at 30% 20%, #60a5fa, #9333ea);box-shadow:0 10px 25px rgba(99,102,241,.35)}
+    .logo{width:36px;height:36px;border-radius:10px;background: radial-gradient(100% 100% at 30% 20%, #60a5fa, #9333ea);box-shadow:0 10px 25px rgba(99,102,241,.35)}
     .tabs{display:flex;gap:10px;flex-wrap:wrap}
-    .tab-btn{padding:8px 12px;border-radius:999px;background:#0b1222;border:1px solid #1f2a44;color:#cbd5e1;font-size:14px;cursor:pointer}
-    .tab-btn.active{background:linear-gradient(135deg,#1e293b,#0b1222);border-color:#334155;color:#fff;box-shadow:inset 0 0 0 1px #3b82f6}
+    .tab-btn{padding:8px 12px;border-radius:999px;background:var(--panel);border:1px solid var(--border);color:#cbd5e1;font-size:14px;cursor:pointer}
+    .tab-btn.active{background:linear-gradient(135deg,#1e293b,var(--panel));border-color:#334155;color:#fff;box-shadow:inset 0 0 0 1px #3b82f6}
     main{padding:32px 18px}
     .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
-    .card{grid-column:span 12;background:linear-gradient(180deg,#0b1222,#0b1222);border:1px solid #1f2a44;border-radius:var(--radius);padding:18px;box-shadow:0 10px 25px rgba(2,6,23,.5)}
+    .card{grid-column:span 12;background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:0 10px 25px rgba(2,6,23,.5)}
     @media(min-width:800px){.card.span-4{grid-column:span 4}.card.span-6{grid-column:span 6}.card.span-8{grid-column:span 8}}
-    .card h3{margin:0 0 8px}
-    .muted{color:var(--muted)}
+    .muted{color:var(--muted)} .small{font-size:12px}
     .pill{display:inline-block;padding:4px 10px;border-radius:999px;background:#0b152a;border:1px solid #1e293b;color:#93c5fd;font-size:12px}
-    .hero{display:grid;gap:18px}
     .hero h1{font-size:clamp(28px,4vw,42px);margin:0}
-    .hero p{margin:0}
     .btn{appearance:none;border:0;padding:10px 14px;border-radius:12px;background:linear-gradient(135deg,#2563eb,#22c55e);color:white;font-weight:700;cursor:pointer}
     .btn.secondary{background:#0b152a;border:1px solid #1e293b;color:#cbd5e1}
     .row{display:flex;gap:12px;flex-wrap:wrap}
     .list li{margin:6px 0}
-    .kbd{border:1px solid #374151;border-bottom-width:2px;border-radius:6px;padding:0 6px;font-size:12px;color:#e5e7eb}
-    /* Sections */
-    section{display:none}
-    section.active{display:block}
-    /* Quiz */
-    .quiz-q{margin:16px 0;padding:14px;border:1px solid #21304d;border-radius:14px}
-    .quiz-q h4{margin:0 0 8px}
-    .choices label{display:block;margin:6px 0;padding:8px;border-radius:10px;border:1px solid #1f2a44;cursor:pointer}
-    .choices input{margin-right:8px}
-    .result{margin-top:12px;font-weight:700}
-    /* Interactive */
-    .diagram{width:100%;height:340px;border-radius:16px;background:radial-gradient(120% 90% at 50% 0%,#1a2440,#0b1222);border:1px solid #1f2a44;display:grid;place-items:center;position:relative}
+    input[type="search"]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:#0b152a;color:#e5e7eb}
+    .diagram{width:100%;height:340px;border-radius:16px;background:radial-gradient(120% 90% at 50% 0%,#1a2440,#0b1222);border:1px solid var(--border);display:grid;place-items:center;position:relative}
     .hotspot{position:absolute;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:999px;background:#3b82f6;border:2px solid white;cursor:pointer}
     .tooltip{position:absolute;bottom:125%;left:50%;transform:translateX(-50%);background:#0b152a;border:1px solid #1e293b;border-radius:10px;padding:8px;white-space:nowrap;display:none}
     .hotspot:hover .tooltip{display:block}
     footer{padding:28px 18px;border-top:1px solid #1f2937;color:#94a3b8}
-    input[type="search"]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #1f2a44;background:#0b152a;color:#e5e7eb}
-    .tag{display:inline-block;margin-right:6px;margin-bottom:6px;padding:6px 10px;border-radius:999px;background:#0b152a;border:1px solid #1e293b;color:#a7f3d0;font-size:12px}
-    .small{font-size:12px}
+    .teaser{display:flex;gap:12px;flex-wrap:wrap}
+    .teaser .mini{min-width:180px;flex:1;border:1px solid var(--border);border-radius:14px;padding:12px;background:#0b152a;cursor:pointer}
   </style>
 </head>
 <body>
   <header>
     <div class="container nav">
-      <div class="brand"><div class="logo"></div><span>Brain Explorer</span></div>
+      <div class="brand"><div class="logo"></div><span id="sitename">Brain Explorer</span></div>
       <div class="tabs" role="tablist" aria-label="Site sections">
-        <button class="tab-btn active" data-tab="home" aria-selected="true">Home</button>
+        <button class="tab-btn" data-tab="home">Home</button>
         <button class="tab-btn" data-tab="learn">Learn</button>
         <button class="tab-btn" data-tab="quiz">Quizzes</button>
+        <button class="tab-btn" data-tab="flash">Flashcards</button>
         <button class="tab-btn" data-tab="interactive">Interactive</button>
         <button class="tab-btn" data-tab="resources">Resources</button>
         <button class="tab-btn" data-tab="about">About</button>
@@ -81,8 +61,8 @@
 
   <main class="container">
     <!-- HOME -->
-    <section id="home" class="active">
-      <div class="grid hero">
+    <section id="home">
+      <div class="grid">
         <div class="card span-8">
           <span class="pill">Neuroscience for students</span>
           <h1>Understand your brain — memory, attention, emotion, & more.</h1>
@@ -91,19 +71,53 @@
             <button class="btn" data-nav="learn">Start learning</button>
             <button class="btn secondary" data-nav="quiz">Try a quiz</button>
           </div>
+
+          <!-- Featured topics -->
+          <div class="grid" style="margin-top:18px">
+            <a class="card span-4" href="#learn"><h4>Lobes of the brain</h4><p class="muted">What each lobe does in daily life.</p></a>
+            <a class="card span-4" href="#learn"><h4>Memory types</h4><p class="muted">Working, episodic, procedural, and more.</p></a>
+            <a class="card span-4" href="#learn"><h4>Neurotransmitters</h4><p class="muted">Dopamine, serotonin, acetylcholine & more.</p></a>
+          </div>
+
+          <!-- Flashcard teaser -->
+          <div class="card span-12" style="margin-top:18px">
+            <h3>Flashcards preview</h3>
+            <div class="teaser" id="teaser"></div>
+            <div class="row" style="margin-top:10px">
+              <a class="btn" href="#flash">Open full set</a>
+              <button class="btn secondary" id="shuffleTeaser">Shuffle</button>
+            </div>
+            <p class="small muted">Click a card to flip.</p>
+          </div>
+
+          <!-- Teacher corner -->
+          <div class="grid" style="margin-top:18px">
+            <div class="card span-6">
+              <h3>Teacher corner</h3>
+              <p class="muted">Download a 1-page worksheet + answer key for Brain Basics (coming soon).</p>
+              <div class="row">
+                <a class="btn" href="#" aria-disabled="true">Worksheet (PDF)</a>
+                <a class="btn secondary" href="#" aria-disabled="true">Answer key</a>
+              </div>
+              <p class="small muted">Tell me when you want real PDFs — I’ll generate them.</p>
+            </div>
+            <div class="card span-6">
+              <h3>What you’ll learn</h3>
+              <ul class="list">
+                <li>Spot the roles of major lobes in everyday tasks.</li>
+                <li>Explain memory types with simple examples.</li>
+                <li>Connect transmitters to behavior (motivation, focus).</li>
+                <li>Use sleep strategies to remember more.</li>
+              </ul>
+            </div>
+          </div>
         </div>
+
+        <!-- Rotating facts -->
         <div class="card span-4">
           <h3>Today’s quick facts</h3>
-          <ul class="list">
-            <li>~86 billion neurons in the human brain.</li>
-            <li>The <b>hippocampus</b> helps form new memories.</li>
-            <li>Practice + sleep = stronger synapses.</li>
-          </ul>
-          <div class="row">
-            <span class="tag">#neurons</span>
-            <span class="tag">#memory</span>
-            <span class="tag">#neuroplasticity</span>
-          </div>
+          <ul id="factsList" class="list"></ul>
+          <p class="small muted" id="factsStamp"></p>
         </div>
       </div>
     </section>
@@ -123,15 +137,14 @@
                 <li><b>Temporal</b>: hearing, language (Wernicke’s), memory.</li>
                 <li><b>Occipital</b>: vision processing.</li>
               </ul>
-              <p class="small muted">Tip: A blow to the back of the head can cause visual flashes—occipital cortex at work.</p>
             </div>
             <div class="card span-6">
               <h4>Key Structures</h4>
               <ul class="list">
-                <li><b>Hippocampus</b>: new memories (think “campus” for learning).</li>
+                <li><b>Hippocampus</b>: new memories.</li>
                 <li><b>Amygdala</b>: emotion & fear detection.</li>
-                <li><b>Cerebellum</b>: balance, fine motor skills, timing.</li>
-                <li><b>Brainstem</b>: breathing, heart rate, basic life support.</li>
+                <li><b>Cerebellum</b>: balance & timing.</li>
+                <li><b>Brainstem</b>: basic life support.</li>
               </ul>
             </div>
           </div>
@@ -205,11 +218,23 @@
               <button class="btn secondary" type="button" id="resetQuiz">Reset</button>
             </div>
             <p id="score" class="muted"></p>
+            <p class="small muted">Best score (this browser): <span id="bestScore">—</span></p>
           </form>
         </div>
         <div class="card span-4">
           <h3>Make your own quiz</h3>
           <p class="muted">Tell me your topics (e.g., neurotransmitters, sleep stages), and I’ll generate more questions.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FLASHCARDS -->
+    <section id="flash">
+      <div class="grid">
+        <div class="card span-12">
+          <h3>Flashcards</h3>
+          <div id="fc" class="row"></div>
+          <p class="small muted">Click a card to flip.</p>
         </div>
       </div>
     </section>
@@ -220,21 +245,12 @@
         <div class="card span-8">
           <h3>Interactive Brain Map (prototype)</h3>
           <div class="diagram" aria-label="brain diagram placeholder">
-            <!-- Hotspots (positions are rough for demo) -->
-            <div class="hotspot" style="top:55%;left:30%">
-              <span class="tooltip"><b>Frontal lobe</b>: planning & decisions</span>
-            </div>
-            <div class="hotspot" style="top:55%;left:50%">
-              <span class="tooltip"><b>Parietal lobe</b>: touch, spatial</span>
-            </div>
-            <div class="hotspot" style="top:65%;left:70%">
-              <span class="tooltip"><b>Occipital lobe</b>: vision</span>
-            </div>
-            <div class="hotspot" style="top:75%;left:50%">
-              <span class="tooltip"><b>Cerebellum</b>: balance & timing</span>
-            </div>
+            <div class="hotspot" style="top:55%;left:30%"><span class="tooltip"><b>Frontal lobe</b>: planning & decisions</span></div>
+            <div class="hotspot" style="top:55%;left:50%"><span class="tooltip"><b>Parietal lobe</b>: touch, spatial</span></div>
+            <div class="hotspot" style="top:65%;left:70%"><span class="tooltip"><b>Occipital lobe</b>: vision</span></div>
+            <div class="hotspot" style="top:75%;left:50%"><span class="tooltip"><b>Cerebellum</b>: balance & timing</span></div>
           </div>
-          <p class="small muted">We can swap this placeholder for a proper SVG brain and precise hotspots later.</p>
+          <p class="small muted">We can swap this placeholder for a proper SVG brain with precise hotspots later.</p>
         </div>
         <div class="card span-4">
           <h3>Feature ideas</h3>
@@ -267,7 +283,7 @@
       <div class="grid">
         <div class="card span-12">
           <h3>About This Site</h3>
-          <p class="muted">Made by students, for students. If you spot mistakes or want new topics, use the contact info you’ll add here.</p>
+          <p class="muted">Made by students, for students. Spot mistakes or want new topics? Use the contact info you’ll add here.</p>
         </div>
       </div>
     </section>
@@ -275,25 +291,37 @@
 
   <footer>
     <div class="container">
-      <div class="row" style="justify-content:space-between">
+      <div class="row" style="justify-content:space-between;align-items:center;flex-wrap:wrap">
         <span class="small">© <span id="year"></span> Brain Explorer</span>
+        <div class="row small">
+          <a href="#about">About</a><span class="muted">·</span>
+          <a href="#resources">Resources</a><span class="muted">·</span>
+          <a href="mailto:you@example.com">Contact</a>
+        </div>
         <span class="small">Built with plain HTML/CSS/JS — easy to host anywhere.</span>
       </div>
     </div>
   </footer>
 
   <script>
-    // Tab navigation
+    // ----- Tabs with hash routing -----
     const tabs = document.querySelectorAll('.tab-btn');
-    const sections = document.querySelectorAll('main section');
+    const sections = [...document.querySelectorAll('main section')];
     function show(tab){
-      sections.forEach(s=>s.classList.toggle('active', s.id===tab));
+      sections.forEach(s=>s.style.display = (s.id===tab?'block':'none'));
       tabs.forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+      if(location.hash !== '#'+tab){ history.replaceState(null,'','#'+tab); }
     }
     tabs.forEach(btn=>btn.addEventListener('click',()=>show(btn.dataset.tab)));
     document.querySelectorAll('[data-nav]').forEach(x=>x.addEventListener('click',()=>show(x.dataset.nav)));
+    function initRoute(){
+      const h = (location.hash || '#home').slice(1);
+      const valid = sections.some(s=>s.id===h) ? h : 'home';
+      show(valid);
+    }
+    window.addEventListener('hashchange', initRoute);
 
-    // Search demo
+    // ----- Search -----
     const topics = [
       { term:'memory', text:'Hippocampus helps form new memories; sleep consolidates them.'},
       { term:'dopamine', text:'A neurotransmitter tied to motivation and reward prediction.'},
@@ -316,25 +344,28 @@
       });
     }
 
-    // Quiz logic
+    // ----- Quiz with best-score in localStorage -----
     const key = { q1:'Occipital', q2:'New memories', q3:'Amygdala', q4:'Speech production', q5:'Brainstem' };
     const form = document.getElementById('quizForm');
     const resetBtn = document.getElementById('resetQuiz');
+    const bestEl = document.getElementById('bestScore');
+    function updateBest(score,total){
+      const k='be_best'; const prev = localStorage.getItem(k);
+      if(prev===null || score>Number(prev)){ localStorage.setItem(k, String(score)); }
+      bestEl.textContent = (localStorage.getItem(k) ?? '—') + '/' + total;
+    }
     function grade(){
       let score = 0; let total = Object.keys(key).length;
       for(const q in key){
         const chosen = form.querySelector(`input[name="${q}"]:checked`);
         const box = form.querySelector(`.result[data-for="${q}"]`);
         if(!box) continue;
-        if(!chosen){
-          box.textContent = 'Pick an answer';
-          box.style.color = '#f59e0b';
-          continue;
-        }
+        if(!chosen){ box.textContent = 'Pick an answer'; box.style.color = '#f59e0b'; continue; }
         if(chosen.value === key[q]){ score++; box.textContent = 'Correct!'; box.style.color = '#34d399'; }
         else { box.textContent = `Not quite. Correct: ${key[q]}`; box.style.color = '#f87171'; }
       }
       document.getElementById('score').textContent = `Score: ${score}/${total}`;
+      updateBest(score,total);
     }
     function resetQuiz(){
       form.reset();
@@ -346,8 +377,97 @@
       resetBtn.addEventListener('click', resetQuiz);
     }
 
-    // Year
+    // ----- Flashcards (full set) -----
+    const fcData = [
+      {front:'Hippocampus',back:'Forms new memories; medial temporal lobe.'},
+      {front:'Amygdala',back:'Emotion/fear detection and rapid responses.'},
+      {front:'Cerebellum',back:'Balance, timing, and fine motor control.'},
+      {front:'Broca’s area',back:'Speech production (inferior frontal gyrus).'},
+      {front:'Wernicke’s area',back:'Language comprehension (posterior temporal).'}
+    ];
+    const fcWrap = document.getElementById('fc');
+    function renderFC(){
+      if(!fcWrap) return;
+      fcWrap.innerHTML='';
+      fcData.forEach(it=>{
+        const card = document.createElement('div'); card.className='card span-4'; card.style.cursor='pointer';
+        card.innerHTML = `<h4>${it.front}</h4><p class="muted">${it.back}</p>`;
+        let flip=false;
+        card.addEventListener('click', ()=>{
+          flip=!flip; card.innerHTML = flip ? `<h4>${it.back}</h4><p class="muted">${it.front}</p>` : `<h4>${it.front}</h4><p class="muted">${it.back}</p>`;
+        });
+        fcWrap.appendChild(card);
+      });
+    }
+
+    // ----- Flashcard teaser (home) -----
+    function renderTeaser(){
+      const el = document.getElementById('teaser'); if(!el) return;
+      const sample = [...fcData].sort(()=>Math.random()-0.5).slice(0,3);
+      el.innerHTML = '';
+      sample.forEach(it=>{
+        const c = document.createElement('div'); c.className='mini';
+        c.innerHTML = `<b>${it.front}</b><br><span class="muted">${it.back}</span>`;
+        let f=false; c.addEventListener('click',()=>{ f=!f; c.innerHTML = f? `<b>${it.back}</b><br><span class="muted">${it.front}</span>` : `<b>${it.front}</b><br><span class="muted">${it.back}</span>`; });
+        el.appendChild(c);
+      });
+      const btn = document.getElementById('shuffleTeaser');
+      if(btn){ btn.onclick = renderTeaser; }
+    }
+
+    // ----- Daily rotating facts (not in basics) -----
+    const DAILY_FACTS = {
+      0: [
+        "The brain itself has no pain receptors—surgeons can operate on awake patients.",
+        "Signals in myelinated axons can reach ~120 m/s (about 270 mph).",
+        "Your brain briefly suppresses vision during fast eye jumps (saccades) to prevent blur."
+      ],
+      1: [
+        "Smell has a direct route to memory centers, bypassing the thalamus—hence strong smell–memory links.",
+        "Infant brains burn more glucose than adult brains while wiring up connections.",
+        "The \"homunculus\" is a distorted body map on your cortex—hands/lips take huge space."
+      ],
+      2: [
+        "London taxi drivers show larger posterior hippocampi, linked with intense navigation practice.",
+        "Some people experience synesthesia—letters or sounds trigger colors or tastes.",
+        "Your brain can \"fill in\" a blind spot where the optic nerve exits the eye."
+      ],
+      3: [
+        "During REM sleep, your muscles are actively paralyzed to keep you from acting out dreams.",
+        "Reading Braille can activate the visual cortex in blind readers—plasticity in action.",
+        "Two sounds arriving within ~30 ms can be fused into one (temporal resolution limit)."
+      ],
+      4: [
+        "A single neuron can make thousands of synapses; total connections likely exceed 100 trillion.",
+        "Place cells in the hippocampus fire like an internal GPS when you navigate.",
+        "Your pupils change not just with light but with effort and surprise."
+      ],
+      5: [
+        "Most people can’t tickle themselves—your cerebellum cancels the expected sensation.",
+        "The brain uses about 20% of resting energy despite being ~2% of body weight.",
+        "Mirror neurons may help you learn by watching and empathize with others."
+      ],
+      6: [
+        "Language is usually left-dominant, but music and prosody rely more on the right hemisphere.",
+        "Your brain predicts the next sound in speech; surprises spike activity.",
+        "Motion aftereffect: stare at a waterfall, then look away—stationary objects seem to drift upward."
+      ]
+    };
+    (function renderFacts(){
+      const day = new Date().getDay(); // 0=Sun…6=Sat
+      const facts = DAILY_FACTS[day] || [];
+      const ul = document.getElementById('factsList');
+      const stamp = document.getElementById('factsStamp');
+      if(ul){ ul.innerHTML = facts.map(f => `<li>${f}</li>`).join(''); }
+      if(stamp){
+        const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+        stamp.textContent = `Auto-rotates daily • ${days[day]}`;
+      }
+    })();
+
+    // ----- Init -----
     document.getElementById('year').textContent = new Date().getFullYear();
+    renderFC(); renderTeaser(); initRoute();
   </script>
 </body>
 </html>
