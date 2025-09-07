@@ -174,42 +174,22 @@ main{padding:30px 18px}
 /* Footer */
 footer{padding:28px 18px;border-top:1px solid var(--border);color:#9cc4cf}
 
-/* ========== Reviews (placeholders & text match) ========== */
-export async function onRequestGet({ env, request }) {
-  const url = new URL(request.url);
-  const limit = Math.min(parseInt(url.searchParams.get('limit') || '100', 10), 200);
-  const { results } = await env.DB.prepare(
-    `SELECT id, name, text, created_at
-     FROM reviews
-     ORDER BY created_at DESC
-     LIMIT ?`
-  ).bind(limit).all();
-
-  return new Response(JSON.stringify({ items: results || [] }), {
-    headers: { 'Content-Type': 'application/json' }
-  });
+/* Reviews — tidy layout & spacing */
+.reviews-wrap{ display:flex; flex-direction:column; gap:12px; }
+.review{
+  border:1px solid var(--border);
+  background:#0f2430;
+  border-radius:14px;
+  padding:12px;
 }
-
-export async function onRequestPost({ env, request }) {
-  const body = await request.json().catch(() => ({}));
-  const name = (body.name || 'Anonymous').toString().slice(0, 80);
-  const text = (body.text || '').toString().trim();
-
-  if (text.length < 2 || text.length > 600) {
-    return new Response(JSON.stringify({ error: 'text length out of range' }), { status: 400 });
-  }
-
-  const id = crypto.randomUUID().replace(/-/g, '');
-  await env.DB.prepare(
-    `INSERT INTO reviews (id, name, text, created_at)
-     VALUES (?, ?, ?, CURRENT_TIMESTAMP)`
-  ).bind(id, name, text).run();
-
-  return new Response(JSON.stringify({ ok: true, id }), {
-    headers: { 'Content-Type': 'application/json' },
-    status: 201
-  });
+.review-text{
+  margin:0 0 6px;
+  line-height:1.55;
+  white-space:pre-wrap;      /* keep user line breaks */
+  word-break:break-word;     /* avoid overflow */
 }
+.review-meta{ display:block; color:#86aeb8; }
+
 
 
 /* ========== Home: teacher + what you'll learn (shorter copy + bigger) ========== */
@@ -792,24 +772,74 @@ document.querySelectorAll('svg a').forEach(a=>{
   a.addEventListener('click',()=>{document.getElementById('brainInfo').textContent=a.getAttribute('data-part')})
 });
 
-/* ---------- Reviews (localStorage) ---------- */
-const LS_KEY='be_reviews_v1';
-function loadReviews(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)||'[]'); }catch(e){ return []; } }
-function saveReviews(arr){ localStorage.setItem(LS_KEY, JSON.stringify(arr)); }
-function addReview(name,text){ const arr=loadReviews(); const when=new Date().toLocaleString(); arr.unshift({name:name||'Anonymous',text:text.trim(),when}); saveReviews(arr); renderReviews(); }
-function renderReviews(){
-  const home=document.getElementById('homeReviews'); const about=document.getElementById('aboutReviews');
-  const arr=loadReviews();
-  if(home){ home.innerHTML=''; arr.slice(0,4).forEach(r=>home.appendChild(reviewEl(r))); }
-  if(about){ about.innerHTML=''; arr.forEach(r=>about.appendChild(reviewEl(r))); }
+/* ---------- Reviews (Cloudflare D1 via Pages Functions) ---------- */
+async function api(path, opts = {}) {
+  const res = await fetch(path, {
+    headers: { 'Content-Type': 'application/json' },
+    ...opts,
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
 }
-function reviewEl(r){ const d=document.createElement('div'); d.className='review'; d.innerHTML=`${escapeHtml(r.text)}<small>— ${escapeHtml(r.name)} • ${r.when}</small>`; return d; }
-function escapeHtml(s){return s.replace(/[&<>"]/g,m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
-document.getElementById('reviewForm')?.addEventListener('submit',e=>{
-  e.preventDefault(); const name=document.getElementById('revName').value.trim(); const text=document.getElementById('revText').value.trim();
-  if(!text){ alert('Please write a short review.'); return; }
-  addReview(name,text); e.target.reset();
+
+function escapeHtml(s){
+  return String(s ?? '').replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+}
+
+function reviewEl(r){
+  const d = document.createElement('div');
+  d.className = 'review';
+  const when = new Date(r.created_at).toLocaleString();
+  d.innerHTML = `
+    <p class="review-text">${escapeHtml(r.text)}</p>
+    <small class="review-meta">— ${escapeHtml(r.name || 'Anonymous')} • ${when}</small>
+  `;
+  return d;
+}
+
+async function renderReviews(){
+  const home = document.getElementById('homeReviews');
+  const about = document.getElementById('aboutReviews');
+  const HOME_COUNT = 3; // show 3 on Home (change if you want)
+
+  try {
+    const { items } = await api('/api/reviews?limit=200');
+
+    if (home){
+      home.innerHTML = '';
+      items.slice(0, HOME_COUNT).forEach(r => home.appendChild(reviewEl(r)));
+    }
+
+    if (about){
+      about.innerHTML = '';
+      items.forEach(r => about.appendChild(reviewEl(r)));
+    }
+  } catch (err){
+    console.error(err);
+    if (home) home.textContent = 'Could not load reviews.';
+    if (about) about.textContent = 'Could not load reviews.';
+  }
+}
+
+document.getElementById('reviewForm')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name = document.getElementById('revName')?.value.trim();
+  const text = document.getElementById('revText')?.value.trim();
+  if (!text){ alert('Please write a short review.'); return; }
+
+  try {
+    await api('/api/reviews', {
+      method: 'POST',
+      body: JSON.stringify({ name: name || 'Anonymous', text })
+    });
+    e.target.reset?.();
+    await renderReviews();
+  } catch (err){
+    console.error(err);
+    alert('Sorry—could not post the review.');
+  }
 });
+
 
 /* ---------- init ---------- */
 document.getElementById('year').textContent=new Date().getFullYear();
