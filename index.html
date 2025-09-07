@@ -175,18 +175,42 @@ main{padding:30px 18px}
 footer{padding:28px 18px;border-top:1px solid var(--border);color:#9cc4cf}
 
 /* ========== Reviews (placeholders & text match) ========== */
-.reviews-wrap{display:flex;flex-direction:column;gap:12px}
-.review{border:1px solid var(--border);background:#0f2430;border-radius:14px;padding:12px}
-.review small{display:block;color:#86aeb8;margin-top:6px}
-.review-form{margin-top:12px;display:grid;gap:8px}
-.review-form input,.review-form textarea{
-  width:100%;padding:12px 12px;border-radius:12px;border:1px solid var(--border);
-  background:#0b2130;color:#d9f3f6;font-size:15px;line-height:1.2;
+export async function onRequestGet({ env, request }) {
+  const url = new URL(request.url);
+  const limit = Math.min(parseInt(url.searchParams.get('limit') || '100', 10), 200);
+  const { results } = await env.DB.prepare(
+    `SELECT id, name, text, created_at
+     FROM reviews
+     ORDER BY created_at DESC
+     LIMIT ?`
+  ).bind(limit).all();
+
+  return new Response(JSON.stringify({ items: results || [] }), {
+    headers: { 'Content-Type': 'application/json' }
+  });
 }
-.review-form textarea{min-height:96px;resize:vertical}
-.review-form input::placeholder,.review-form textarea::placeholder{
-  color:#9cc4cf;opacity:1;font-size:15px;font-style:normal;
+
+export async function onRequestPost({ env, request }) {
+  const body = await request.json().catch(() => ({}));
+  const name = (body.name || 'Anonymous').toString().slice(0, 80);
+  const text = (body.text || '').toString().trim();
+
+  if (text.length < 2 || text.length > 600) {
+    return new Response(JSON.stringify({ error: 'text length out of range' }), { status: 400 });
+  }
+
+  const id = crypto.randomUUID().replace(/-/g, '');
+  await env.DB.prepare(
+    `INSERT INTO reviews (id, name, text, created_at)
+     VALUES (?, ?, ?, CURRENT_TIMESTAMP)`
+  ).bind(id, name, text).run();
+
+  return new Response(JSON.stringify({ ok: true, id }), {
+    headers: { 'Content-Type': 'application/json' },
+    status: 201
+  });
 }
+
 
 /* ========== Home: teacher + what you'll learn (shorter copy + bigger) ========== */
 .teacher-blurb{font-size:15px;line-height:1.55}
