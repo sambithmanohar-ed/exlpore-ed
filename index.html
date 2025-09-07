@@ -40,18 +40,29 @@ body{
   background-color: var(--bg-1);
 }
 /* Fixed, GPU-friendly glow behind everything (no attachment:fixed on body) */
+/* Fixed overlay glows + hard fade to black after 60vh */
 .page-glow{
   position:fixed;
   inset:0;
-  z-index:-1;                  /* behind all content */
+  z-index:-1;
   pointer-events:none;
-  /* the decorative glows */
+
+  /* TOPMOST layer: makes everything after 60vh completely black */
   background:
+    linear-gradient(to bottom,
+      rgba(0,0,0,0) 0,
+      rgba(0,0,0,0) 60vh,   /* change this cutoff if you like */
+      #000 60vh,
+      #000 100%),
+
+    /* Decorative corner glows under the fade */
     radial-gradient(1200px 800px at 10% -10%, rgba(16,52,74,.85) 0%, rgba(16,52,74,0) 60%),
     radial-gradient(1000px 900px at 110% 0%, rgba(10,39,48,.80) 0%, rgba(10,39,48,0) 60%);
-  background-repeat:no-repeat;
-  background-position: top left, top right;
-  /* jank guards */
+
+  background-repeat:no-repeat, no-repeat, no-repeat;
+  background-position: top left, top left, top right;
+
+  /* Jank guards */
   will-change: opacity, transform;
   backface-visibility:hidden;
   transform: translateZ(0);
