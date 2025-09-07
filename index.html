@@ -175,6 +175,51 @@ main{padding:30px 18px}
 footer{padding:28px 18px;border-top:1px solid var(--border);color:#9cc4cf}
 
 /* Reviews — tidy layout & spacing */
+/* ---------- Reviews form: dark inputs + tidy spacing ---------- */
+.review-form{
+  display:flex; flex-direction:column; gap:10px; margin-top:10px;
+}
+.review-form input,
+.review-form textarea{
+  width:100%;
+  font: inherit;
+  color: var(--text);
+  background:#0f2430;                /* dark field */
+  border:1px solid var(--border);     /* subtle border */
+  border-radius:12px;
+  padding:10px 12px;
+  outline:none;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+.review-form textarea{
+  min-height:110px; resize:vertical; line-height:1.5;
+}
+.review-form input::placeholder,
+.review-form textarea::placeholder{
+  color:#7ea2ad;                      /* muted placeholder */
+}
+.review-form input:focus,
+.review-form textarea:focus{
+  border-color:#1dddbf;
+  box-shadow:0 0 0 2px rgba(46,230,181,.25); /* soft glow focus */
+}
+
+/* Button already uses .btn; give it some breathing room */
+.review-form .btn{ align-self:flex-start; }
+
+/* Optional: nicer system autofill on Chrome */
+.review-form input:-webkit-autofill,
+.review-form textarea:-webkit-autofill{
+  -webkit-text-fill-color: var(--text);
+  -webkit-box-shadow: 0 0 0px 1000px #0f2430 inset;
+  caret-color: var(--text);
+}
+
+/* Loading / empty / error line */
+.reviews-wrap .state{
+  color:#86aeb8; font-size:13px; padding:6px 0;
+}
+
 .reviews-wrap{ display:flex; flex-direction:column; gap:12px; }
 .review{
   border:1px solid var(--border);
@@ -297,7 +342,9 @@ footer{padding:28px 18px;border-top:1px solid var(--border);color:#9cc4cf}
 
         <div class="card" style="margin-top:12px">
           <h4 style="margin:0 0 6px">Reviews</h4>
-          <div id="homeReviews" class="reviews-wrap" aria-live="polite"></div>
+         <div id="homeReviews" class="reviews-wrap" aria-live="polite">
+            <div class="state">Loading reviews…</div>
+         </div>
           <form id="reviewForm" class="review-form" autocomplete="on">
             <input id="revName" placeholder="Your name (optional)" />
             <textarea id="revText" placeholder="Write a short review…"></textarea>
@@ -800,24 +847,31 @@ function reviewEl(r){
 async function renderReviews(){
   const home = document.getElementById('homeReviews');
   const about = document.getElementById('aboutReviews');
-  const HOME_COUNT = 3; // show 3 on Home (change if you want)
+  const HOME_COUNT = 3; // show 3 on Home
+
+  // show a gentle loading message if empty
+  if (home && !home.children.length) home.innerHTML = '<div class="state">Loading reviews…</div>';
+  if (about && !about.children.length) about.innerHTML = '<div class="state">Loading reviews…</div>';
 
   try {
     const { items } = await api('/api/reviews?limit=200');
 
     if (home){
       home.innerHTML = '';
-      items.slice(0, HOME_COUNT).forEach(r => home.appendChild(reviewEl(r)));
+      const subset = items.slice(0, HOME_COUNT);
+      subset.forEach(r => home.appendChild(reviewEl(r)));
+      if (!subset.length) home.innerHTML = '<div class="state">No reviews yet. Be the first!</div>';
     }
 
     if (about){
       about.innerHTML = '';
       items.forEach(r => about.appendChild(reviewEl(r)));
+      if (!items.length) about.innerHTML = '<div class="state">No reviews yet.</div>';
     }
   } catch (err){
     console.error(err);
-    if (home) home.textContent = 'Could not load reviews.';
-    if (about) about.textContent = 'Could not load reviews.';
+    if (home) home.innerHTML = '<div class="state">Could not load reviews.</div>';
+    if (about) about.innerHTML = '<div class="state">Could not load reviews.</div>';
   }
 }
 
