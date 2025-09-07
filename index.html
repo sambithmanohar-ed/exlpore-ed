@@ -1,473 +1,526 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Brain Explorer</title>
-  <meta name="description" content="Student-friendly neuroscience with lessons, quizzes, flashcards, and an interactive brain map." />
-  <link rel="icon" href="/favicon.ico">
-  <link rel="apple-touch-icon" href="/icon.png">
-  <link rel="manifest" href="/site.webmanifest">
-  <meta name="theme-color" content="#0f172a">
-  <style>
-    :root{ --bg:#0f172a; --muted:#94a3b8; --text:#e5e7eb; --accent:#60a5fa; --accent2:#34d399; --radius:18px; --border:#1f2a44; --panel:#0b1222; }
-    *{box-sizing:border-box} html,body{height:100%}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans",sans-serif;background:linear-gradient(180deg,#0b1023,#0f172a 30%);color:var(--text)}
-    a{color:var(--accent);text-decoration:none}
-    header{position:sticky;top:0;background:rgba(2,6,23,.6);backdrop-filter:blur(6px);border-bottom:1px solid #1f2937;z-index:50}
-    .container{max-width:1100px;margin:0 auto;padding:18px}
-    .nav{display:flex;align-items:center;gap:16px;justify-content:space-between}
-    .brand{display:flex;align-items:center;gap:10px;font-weight:700}
-    .logo{width:36px;height:36px;border-radius:10px;background: radial-gradient(100% 100% at 30% 20%, #60a5fa, #9333ea);box-shadow:0 10px 25px rgba(99,102,241,.35)}
-    .tabs{display:flex;gap:10px;flex-wrap:wrap}
-    .tab-btn{padding:8px 12px;border-radius:999px;background:var(--panel);border:1px solid var(--border);color:#cbd5e1;font-size:14px;cursor:pointer}
-    .tab-btn.active{background:linear-gradient(135deg,#1e293b,var(--panel));border-color:#334155;color:#fff;box-shadow:inset 0 0 0 1px #3b82f6}
-    main{padding:32px 18px}
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
-    .card{grid-column:span 12;background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:0 10px 25px rgba(2,6,23,.5)}
-    @media(min-width:800px){.card.span-4{grid-column:span 4}.card.span-6{grid-column:span 6}.card.span-8{grid-column:span 8}}
-    .muted{color:var(--muted)} .small{font-size:12px}
-    .pill{display:inline-block;padding:4px 10px;border-radius:999px;background:#0b152a;border:1px solid #1e293b;color:#93c5fd;font-size:12px}
-    .hero h1{font-size:clamp(28px,4vw,42px);margin:0}
-    .btn{appearance:none;border:0;padding:10px 14px;border-radius:12px;background:linear-gradient(135deg,#2563eb,#22c55e);color:white;font-weight:700;cursor:pointer}
-    .btn.secondary{background:#0b152a;border:1px solid #1e293b;color:#cbd5e1}
-    .row{display:flex;gap:12px;flex-wrap:wrap}
-    .list li{margin:6px 0}
-    input[type="search"]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:#0b152a;color:#e5e7eb}
-    .diagram{width:100%;height:340px;border-radius:16px;background:radial-gradient(120% 90% at 50% 0%,#1a2440,#0b1222);border:1px solid var(--border);display:grid;place-items:center;position:relative}
-    .hotspot{position:absolute;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:999px;background:#3b82f6;border:2px solid white;cursor:pointer}
-    .tooltip{position:absolute;bottom:125%;left:50%;transform:translateX(-50%);background:#0b152a;border:1px solid #1e293b;border-radius:10px;padding:8px;white-space:nowrap;display:none}
-    .hotspot:hover .tooltip{display:block}
-    footer{padding:28px 18px;border-top:1px solid #1f2937;color:#94a3b8}
-    .teaser{display:flex;gap:12px;flex-wrap:wrap}
-    .teaser .mini{min-width:180px;flex:1;border:1px solid var(--border);border-radius:14px;padding:12px;background:#0b152a;cursor:pointer}
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Brain Explorer</title>
+<meta name="description" content="Student-friendly neuroscience with lessons, quizzes, flashcards, and an interactive brain map."/>
+<link rel="icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#0f172a">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H8Z1QLY79S"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-H8Z1QLY79S', {
+    page_title: document.title,
+    page_path: location.pathname + location.hash
+  });
+  window.addEventListener('hashchange', () => {
+    gtag('event', 'page_view', {
+      page_title: document.title,
+      page_location: location.href,
+      page_path: location.pathname + location.hash
+    });
+  });
+</script>
+
+<style>
+:root{--bg:#0f172a;--muted:#94a3b8;--text:#e5e7eb;--accent:#60a5fa;--accent2:#34d399;--radius:18px;--border:#1f2a44;--panel:#0b1222}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans",sans-serif;background:linear-gradient(180deg,#0b1023,#0f172a 30%);color:var(--text)}
+a{color:var(--accent);text-decoration:none}
+header{position:sticky;top:0;background:rgba(2,6,23,.6);backdrop-filter:blur(6px);border-bottom:1px solid #1f2937;z-index:50}
+.container{max-width:1100px;margin:0 auto;padding:18px}
+.nav{display:flex;align-items:center;gap:16px;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700}
+.logo{width:36px;height:36px;border-radius:10px;background: radial-gradient(100% 100% at 30% 20%, #60a5fa, #9333ea);box-shadow:0 10px 25px rgba(99,102,241,.35)}
+.tabs{display:flex;gap:10px;flex-wrap:wrap}
+.tab-btn{padding:8px 12px;border-radius:999px;background:var(--panel);border:1px solid var(--border);color:#cbd5e1;font-size:14px;cursor:pointer}
+.tab-btn.active{background:linear-gradient(135deg,#1e293b,var(--panel));border-color:#334155;color:#fff;box-shadow:inset 0 0 0 1px #3b82f6}
+main{padding:32px 18px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+.card{grid-column:span 12;background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:0 10px 25px rgba(2,6,23,.5)}
+@media(min-width:800px){.card.span-3{grid-column:span 3}.card.span-4{grid-column:span 4}.card.span-6{grid-column:span 6}.card.span-8{grid-column:span 8}.card.span-12{grid-column:span 12}}
+.muted{color:var(--muted)}.small{font-size:12px}
+.pill{display:inline-block;padding:4px 10px;border-radius:999px;background:#0b152a;border:1px solid #1e293b;color:#93c5fd;font-size:12px}
+.btn{appearance:none;border:0;padding:10px 14px;border-radius:12px;background:linear-gradient(135deg,#2563eb,#22c55e);color:white;font-weight:700;cursor:pointer}
+.btn.secondary{background:#0b152a;border:1px solid #1e293b;color:#cbd5e1}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.list li{margin:6px 0}
+input[type="search"]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:#0b152a;color:#e5e7eb}
+footer{padding:28px 18px;border-top:1px solid #1f2937;color:#94a3b8}
+.teaser{display:flex;gap:12px;flex-wrap:wrap}
+.teaser .mini{min-width:180px;flex:1;border:1px solid var(--border);border-radius:14px;padding:12px;background:#0b152a;cursor:pointer}
+.diagram{width:100%;border-radius:16px;background:#0b1222;border:1px solid var(--border);padding:10px}
+.diagram .info{margin-top:10px;font-size:14px;color:#cbd5e1}
+.quiz-tabs{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.quiz-tabs button{padding:8px 10px;border-radius:10px;border:1px solid #1f2a44;background:#0b152a;color:#e5e7eb;cursor:pointer}
+.quiz-tabs button.active{background:#1e293b;border-color:#334155}
+hr.soft{border:0;border-top:1px solid #1f2937;margin:12px 0}
+</style>
 </head>
 <body>
-  <header>
-    <div class="container nav">
-      <div class="brand"><div class="logo"></div><span id="sitename">Brain Explorer</span></div>
-      <div class="tabs" role="tablist" aria-label="Site sections">
-        <button class="tab-btn" data-tab="home">Home</button>
-        <button class="tab-btn" data-tab="learn">Learn</button>
-        <button class="tab-btn" data-tab="quiz">Quizzes</button>
-        <button class="tab-btn" data-tab="flash">Flashcards</button>
-        <button class="tab-btn" data-tab="interactive">Interactive</button>
-        <button class="tab-btn" data-tab="resources">Resources</button>
-        <button class="tab-btn" data-tab="about">About</button>
-      </div>
+<header>
+  <div class="container nav">
+    <div class="brand"><div class="logo"></div><span id="sitename">Brain Explorer</span></div>
+    <div class="tabs" role="tablist" aria-label="Site sections">
+      <button class="tab-btn" data-tab="home">Home</button>
+      <button class="tab-btn" data-tab="learn">Learn</button>
+      <button class="tab-btn" data-tab="quiz">Quizzes</button>
+      <button class="tab-btn" data-tab="flash">Flashcards</button>
+      <button class="tab-btn" data-tab="interactive">Interactive</button>
+      <button class="tab-btn" data-tab="resources">Resources</button>
+      <button class="tab-btn" data-tab="about">About</button>
     </div>
-  </header>
+  </div>
+</header>
 
-  <main class="container">
-    <!-- HOME -->
-    <section id="home">
-      <div class="grid">
-        <div class="card span-8">
-          <span class="pill">Neuroscience for students</span>
-          <h1>Understand your brain — memory, attention, emotion, & more.</h1>
-          <p class="muted">Fast, visual lessons with mini-quizzes and an interactive brain map. Built for middle/high school learners.</p>
-          <div class="row" style="margin-top:12px">
-            <button class="btn" data-nav="learn">Start learning</button>
-            <button class="btn secondary" data-nav="quiz">Try a quiz</button>
+<main class="container">
+  <!-- HOME -->
+  <section id="home">
+    <div class="grid">
+      <div class="card span-8">
+        <span class="pill">Neuroscience for students</span>
+        <h1>Understand your brain — memory, attention, emotion, & more.</h1>
+        <p class="muted">Fast, visual lessons with mini-quizzes and an interactive brain map. Built for middle/high school learners.</p>
+        <div class="row" style="margin-top:12px">
+          <button class="btn" data-nav="learn">Start learning</button>
+          <button class="btn secondary" data-nav="quiz">Try a quiz</button>
+        </div>
+
+        <h3 style="margin:18px 0 8px">Topics</h3>
+        <div class="grid">
+          <a class="card span-3" href="#learn"><h4>Parts of the brain</h4><p class="muted">What key parts do in daily life.</p></a>
+          <a class="card span-3" href="#learn"><h4>Memory types</h4><p class="muted">Working, episodic, semantic, procedural.</p></a>
+          <a class="card span-3" href="#learn"><h4>Neurotransmitters</h4><p class="muted">Dopamine, serotonin, acetylcholine, GABA.</p></a>
+          <a class="card span-3" href="#learn"><h4>Sleep</h4><p class="muted">NREM vs REM, circadian rhythm, better recall.</p></a>
+        </div>
+
+        <div class="card span-12" style="margin-top:18px">
+          <h3>Flashcards preview</h3>
+          <div class="teaser" id="teaser"></div>
+          <div class="row" style="margin-top:10px">
+            <a class="btn" href="#flash">Open full set</a>
+            <button class="btn secondary" id="shuffleTeaser">Shuffle</button>
           </div>
-
-          <!-- Featured topics -->
-          <div class="grid" style="margin-top:18px">
-            <a class="card span-4" href="#learn"><h4>Lobes of the brain</h4><p class="muted">What each lobe does in daily life.</p></a>
-            <a class="card span-4" href="#learn"><h4>Memory types</h4><p class="muted">Working, episodic, procedural, and more.</p></a>
-            <a class="card span-4" href="#learn"><h4>Neurotransmitters</h4><p class="muted">Dopamine, serotonin, acetylcholine & more.</p></a>
-          </div>
-
-          <!-- Flashcard teaser -->
-          <div class="card span-12" style="margin-top:18px">
-            <h3>Flashcards preview</h3>
-            <div class="teaser" id="teaser"></div>
-            <div class="row" style="margin-top:10px">
-              <a class="btn" href="#flash">Open full set</a>
-              <button class="btn secondary" id="shuffleTeaser">Shuffle</button>
-            </div>
-            <p class="small muted">Click a card to flip.</p>
-          </div>
-
-          <!-- Teacher corner -->
-          <div class="grid" style="margin-top:18px">
-            <div class="card span-6">
-              <h3>Teacher corner</h3>
-              <p class="muted">Download a 1-page worksheet + answer key for Brain Basics (coming soon).</p>
-              <div class="row">
-                <a class="btn" href="#" aria-disabled="true">Worksheet (PDF)</a>
-                <a class="btn secondary" href="#" aria-disabled="true">Answer key</a>
-              </div>
-              <p class="small muted">Tell me when you want real PDFs — I’ll generate them.</p>
-            </div>
-            <div class="card span-6">
-              <h3>What you’ll learn</h3>
-              <ul class="list">
-                <li>Spot the roles of major lobes in everyday tasks.</li>
-                <li>Explain memory types with simple examples.</li>
-                <li>Connect transmitters to behavior (motivation, focus).</li>
-                <li>Use sleep strategies to remember more.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <!-- Rotating facts -->
-        <div class="card span-4">
-          <h3>Today’s quick facts</h3>
-          <ul id="factsList" class="list"></ul>
-          <p class="small muted" id="factsStamp"></p>
-        </div>
-      </div>
-    </section>
-
-    <!-- LEARN -->
-    <section id="learn">
-      <div class="grid">
-        <div class="card span-8">
-          <h3>Brain Basics</h3>
-          <p class="muted">Start with the big picture: major lobes and what they do.</p>
-          <div class="grid">
-            <div class="card span-6">
-              <h4>Cerebral Lobes</h4>
-              <ul class="list">
-                <li><b>Frontal</b>: planning, decisions, speech (Broca’s area).</li>
-                <li><b>Parietal</b>: touch, spatial awareness.</li>
-                <li><b>Temporal</b>: hearing, language (Wernicke’s), memory.</li>
-                <li><b>Occipital</b>: vision processing.</li>
-              </ul>
-            </div>
-            <div class="card span-6">
-              <h4>Key Structures</h4>
-              <ul class="list">
-                <li><b>Hippocampus</b>: new memories.</li>
-                <li><b>Amygdala</b>: emotion & fear detection.</li>
-                <li><b>Cerebellum</b>: balance & timing.</li>
-                <li><b>Brainstem</b>: basic life support.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="card span-4">
-          <h3>Search topics</h3>
-          <input type="search" id="search" placeholder="Try: memory, dopamine, sleep" aria-label="Search topics" />
-          <ul id="searchResults" class="list"></ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- QUIZ -->
-    <section id="quiz">
-      <div class="grid">
-        <div class="card span-8">
-          <h3>Mini Quiz: Brain Basics (5 Qs)</h3>
-          <form id="quizForm">
-            <div class="quiz-q">
-              <h4>1) Which lobe primarily processes visual information?</h4>
-              <div class="choices">
-                <label><input type="radio" name="q1" value="Frontal"/> Frontal</label>
-                <label><input type="radio" name="q1" value="Temporal"/> Temporal</label>
-                <label><input type="radio" name="q1" value="Parietal"/> Parietal</label>
-                <label><input type="radio" name="q1" value="Occipital"/> Occipital</label>
-              </div>
-              <div class="result" data-for="q1"></div>
-            </div>
-            <div class="quiz-q">
-              <h4>2) The hippocampus is most involved in:</h4>
-              <div class="choices">
-                <label><input type="radio" name="q2" value="Balance"/> Balance</label>
-                <label><input type="radio" name="q2" value="New memories"/> Forming new memories</label>
-                <label><input type="radio" name="q2" value="Vision"/> Vision</label>
-                <label><input type="radio" name="q2" value="Reflexes"/> Reflexes</label>
-              </div>
-              <div class="result" data-for="q2"></div>
-            </div>
-            <div class="quiz-q">
-              <h4>3) Which structure is key for emotion/fear detection?</h4>
-              <div class="choices">
-                <label><input type="radio" name="q3" value="Amygdala"/> Amygdala</label>
-                <label><input type="radio" name="q3" value="Cerebellum"/> Cerebellum</label>
-                <label><input type="radio" name="q3" value="Brainstem"/> Brainstem</label>
-                <label><input type="radio" name="q3" value="Thalamus"/> Thalamus</label>
-              </div>
-              <div class="result" data-for="q3"></div>
-            </div>
-            <div class="quiz-q">
-              <h4>4) Broca’s area helps mainly with:</h4>
-              <div class="choices">
-                <label><input type="radio" name="q4" value="Vision"/> Vision</label>
-                <label><input type="radio" name="q4" value="Speech production"/> Speech production</label>
-                <label><input type="radio" name="q4" value="Balance"/> Balance</label>
-                <label><input type="radio" name="q4" value="Heart rate"/> Heart rate</label>
-              </div>
-              <div class="result" data-for="q4"></div>
-            </div>
-            <div class="quiz-q">
-              <h4>5) Which area is most crucial for basic life functions (breathing/HR)?</h4>
-              <div class="choices">
-                <label><input type="radio" name="q5" value="Cortex"/> Cerebral cortex</label>
-                <label><input type="radio" name="q5" value="Brainstem"/> Brainstem</label>
-                <label><input type="radio" name="q5" value="Hippocampus"/> Hippocampus</label>
-                <label><input type="radio" name="q5" value="Amygdala"/> Amygdala</label>
-              </div>
-              <div class="result" data-for="q5"></div>
-            </div>
-            <div class="row">
-              <button class="btn" type="submit">Check Answers</button>
-              <button class="btn secondary" type="button" id="resetQuiz">Reset</button>
-            </div>
-            <p id="score" class="muted"></p>
-            <p class="small muted">Best score (this browser): <span id="bestScore">—</span></p>
-          </form>
-        </div>
-        <div class="card span-4">
-          <h3>Make your own quiz</h3>
-          <p class="muted">Tell me your topics (e.g., neurotransmitters, sleep stages), and I’ll generate more questions.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- FLASHCARDS -->
-    <section id="flash">
-      <div class="grid">
-        <div class="card span-12">
-          <h3>Flashcards</h3>
-          <div id="fc" class="row"></div>
           <p class="small muted">Click a card to flip.</p>
         </div>
-      </div>
-    </section>
 
-    <!-- INTERACTIVE -->
-    <section id="interactive">
-      <div class="grid">
-        <div class="card span-8">
-          <h3>Interactive Brain Map (prototype)</h3>
-          <div class="diagram" aria-label="brain diagram placeholder">
-            <div class="hotspot" style="top:55%;left:30%"><span class="tooltip"><b>Frontal lobe</b>: planning & decisions</span></div>
-            <div class="hotspot" style="top:55%;left:50%"><span class="tooltip"><b>Parietal lobe</b>: touch, spatial</span></div>
-            <div class="hotspot" style="top:65%;left:70%"><span class="tooltip"><b>Occipital lobe</b>: vision</span></div>
-            <div class="hotspot" style="top:75%;left:50%"><span class="tooltip"><b>Cerebellum</b>: balance & timing</span></div>
+        <div class="grid" style="margin-top:18px">
+          <div class="card span-6">
+            <h3>Teacher corner</h3>
+            <p class="muted">Download a worksheet + answer key for Brain Basics.</p>
+            <div class="row">
+              <a class="btn" href="/brain-basics-worksheet.pdf" download>Worksheet (PDF)</a>
+              <a class="btn secondary" href="/brain-basics-answer-key.pdf" download>Answer key</a>
+            </div>
+            <p class="small muted">Need more worksheets? Tell me the topic and I’ll generate them.</p>
           </div>
-          <p class="small muted">We can swap this placeholder for a proper SVG brain with precise hotspots later.</p>
-        </div>
-        <div class="card span-4">
-          <h3>Feature ideas</h3>
-          <ul class="list">
-            <li>Label-the-brain drag & drop</li>
-            <li>Neurotransmitter flashcards</li>
-            <li>Sleep-cycle timeline</li>
-            <li>Reaction time tester</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- RESOURCES -->
-    <section id="resources">
-      <div class="grid">
-        <div class="card span-12">
-          <h3>Resources</h3>
-          <ul class="list">
-            <li>Beginner summaries you write (I’ll help condense and format).</li>
-            <li>Links to reputable sources (when you’re ready to add them).</li>
-            <li>Downloadable worksheets & answer keys (I can generate PDFs).</li>
-          </ul>
+          <div class="card span-6">
+            <h3>What you’ll learn</h3>
+            <ul class="list">
+              <li>Spot roles of major parts in everyday tasks.</li>
+              <li>Explain memory types with simple examples.</li>
+              <li>Connect transmitters to behavior (motivation, focus).</li>
+              <li>Use sleep strategies to remember more.</li>
+            </ul>
+          </div>
         </div>
       </div>
-    </section>
 
-    <!-- ABOUT -->
-    <section id="about">
-      <div class="grid">
-        <div class="card span-12">
-          <h3>About This Site</h3>
-          <p class="muted">Made by students, for students. Spot mistakes or want new topics? Use the contact info you’ll add here.</p>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="container">
-      <div class="row" style="justify-content:space-between;align-items:center;flex-wrap:wrap">
-        <span class="small">© <span id="year"></span> Brain Explorer</span>
-        <div class="row small">
-          <a href="#about">About</a><span class="muted">·</span>
-          <a href="#resources">Resources</a><span class="muted">·</span>
-          <a href="mailto:you@example.com">Contact</a>
-        </div>
-        <span class="small">Built with plain HTML/CSS/JS — easy to host anywhere.</span>
+      <div class="card span-4">
+        <h3>Today’s quick facts</h3>
+        <ul id="factsList" class="list"></ul>
+        <p class="small muted" id="factsStamp"></p>
       </div>
     </div>
-  </footer>
+  </section>
 
-  <script>
-    // ----- Tabs with hash routing -----
-    const tabs = document.querySelectorAll('.tab-btn');
-    const sections = [...document.querySelectorAll('main section')];
-    function show(tab){
-      sections.forEach(s=>s.style.display = (s.id===tab?'block':'none'));
-      tabs.forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
-      if(location.hash !== '#'+tab){ history.replaceState(null,'','#'+tab); }
-    }
-    tabs.forEach(btn=>btn.addEventListener('click',()=>show(btn.dataset.tab)));
-    document.querySelectorAll('[data-nav]').forEach(x=>x.addEventListener('click',()=>show(x.dataset.nav)));
-    function initRoute(){
-      const h = (location.hash || '#home').slice(1);
-      const valid = sections.some(s=>s.id===h) ? h : 'home';
-      show(valid);
-    }
-    window.addEventListener('hashchange', initRoute);
+  <!-- LEARN -->
+  <section id="learn">
+    <div class="grid">
+      <div class="card span-12">
+        <h3>Learn</h3>
+        <p class="muted">Use these short notes to get the big picture. Each section links to quizzes and flashcards.</p>
+      </div>
 
-    // ----- Search -----
-    const topics = [
-      { term:'memory', text:'Hippocampus helps form new memories; sleep consolidates them.'},
-      { term:'dopamine', text:'A neurotransmitter tied to motivation and reward prediction.'},
-      { term:'sleep', text:'Deep sleep strengthens synapses; REM supports creative linking.'},
-      { term:'amygdala', text:'Key for emotion/fear detection and rapid responses.'},
-      { term:'cerebellum', text:'Coordinates balance, timing, and fine movements.'}
-    ];
-    const search = document.getElementById('search');
-    const results = document.getElementById('searchResults');
-    if(search){
-      search.addEventListener('input',()=>{
-        const q = search.value.trim().toLowerCase();
-        results.innerHTML='';
-        if(!q) return;
-        topics.filter(t=>t.term.includes(q)).forEach(t=>{
-          const li=document.createElement('li');
-          li.innerHTML = `<b>${t.term}</b>: <span class="muted">${t.text}</span>`;
-          results.appendChild(li);
-        });
-      });
-    }
+      <div class="card span-8">
+        <h4>Parts of the brain</h4>
+        <ul class="list">
+          <li><b>Frontal lobe:</b> planning, decisions, self-control, speech (Broca’s).</li>
+          <li><b>Parietal lobe:</b> touch, spatial maps, attention to space.</li>
+          <li><b>Temporal lobe:</b> hearing, language (Wernicke’s), memory.</li>
+          <li><b>Occipital lobe:</b> vision processing.</li>
+          <li><b>Hippocampus:</b> forms new episodic memories.</li>
+          <li><b>Amygdala:</b> rapid threat detection & emotion tagging.</li>
+          <li><b>Cerebellum:</b> balance, timing, fine motor control.</li>
+          <li><b>Brainstem:</b> breathing, heart rate, arousal.</li>
+        </ul>
+        <a class="btn small" href="#quiz" data-quiz="parts">Quiz me on parts</a>
+      </div>
 
-    // ----- Quiz with best-score in localStorage -----
-    const key = { q1:'Occipital', q2:'New memories', q3:'Amygdala', q4:'Speech production', q5:'Brainstem' };
-    const form = document.getElementById('quizForm');
-    const resetBtn = document.getElementById('resetQuiz');
-    const bestEl = document.getElementById('bestScore');
-    function updateBest(score,total){
-      const k='be_best'; const prev = localStorage.getItem(k);
-      if(prev===null || score>Number(prev)){ localStorage.setItem(k, String(score)); }
-      bestEl.textContent = (localStorage.getItem(k) ?? '—') + '/' + total;
-    }
-    function grade(){
-      let score = 0; let total = Object.keys(key).length;
-      for(const q in key){
-        const chosen = form.querySelector(`input[name="${q}"]:checked`);
-        const box = form.querySelector(`.result[data-for="${q}"]`);
-        if(!box) continue;
-        if(!chosen){ box.textContent = 'Pick an answer'; box.style.color = '#f59e0b'; continue; }
-        if(chosen.value === key[q]){ score++; box.textContent = 'Correct!'; box.style.color = '#34d399'; }
-        else { box.textContent = `Not quite. Correct: ${key[q]}`; box.style.color = '#f87171'; }
-      }
-      document.getElementById('score').textContent = `Score: ${score}/${total}`;
-      updateBest(score,total);
-    }
-    function resetQuiz(){
-      form.reset();
-      form.querySelectorAll('.result').forEach(r=>{r.textContent=''; r.style.color=''});
-      document.getElementById('score').textContent='';
-    }
-    if(form){
-      form.addEventListener('submit', e=>{ e.preventDefault(); grade(); });
-      resetBtn.addEventListener('click', resetQuiz);
-    }
+      <div class="card span-4">
+        <h4>Memory types</h4>
+        <ul class="list">
+          <li><b>Working:</b> short-term “workspace”.</li>
+          <li><b>Episodic:</b> events (time/place).</li>
+          <li><b>Semantic:</b> facts/knowledge.</li>
+          <li><b>Procedural:</b> skills & habits.</li>
+        </ul>
+        <a class="btn small" href="#quiz" data-quiz="memory">Quiz me on memory</a>
+      </div>
 
-    // ----- Flashcards (full set) -----
-    const fcData = [
-      {front:'Hippocampus',back:'Forms new memories; medial temporal lobe.'},
-      {front:'Amygdala',back:'Emotion/fear detection and rapid responses.'},
-      {front:'Cerebellum',back:'Balance, timing, and fine motor control.'},
-      {front:'Broca’s area',back:'Speech production (inferior frontal gyrus).'},
-      {front:'Wernicke’s area',back:'Language comprehension (posterior temporal).'}
-    ];
-    const fcWrap = document.getElementById('fc');
-    function renderFC(){
-      if(!fcWrap) return;
-      fcWrap.innerHTML='';
-      fcData.forEach(it=>{
-        const card = document.createElement('div'); card.className='card span-4'; card.style.cursor='pointer';
-        card.innerHTML = `<h4>${it.front}</h4><p class="muted">${it.back}</p>`;
-        let flip=false;
-        card.addEventListener('click', ()=>{
-          flip=!flip; card.innerHTML = flip ? `<h4>${it.back}</h4><p class="muted">${it.front}</p>` : `<h4>${it.front}</h4><p class="muted">${it.back}</p>`;
-        });
-        fcWrap.appendChild(card);
-      });
-    }
+      <div class="card span-4">
+        <h4>Neurotransmitters</h4>
+        <ul class="list">
+          <li><b>Dopamine:</b> motivation & reward prediction.</li>
+          <li><b>Serotonin:</b> mood, sleep, appetite.</li>
+          <li><b>Acetylcholine:</b> attention, learning; neuromuscular junction.</li>
+          <li><b>GABA:</b> main inhibitory transmitter.</li>
+        </ul>
+        <a class="btn small" href="#quiz" data-quiz="nt">Quiz me on transmitters</a>
+      </div>
 
-    // ----- Flashcard teaser (home) -----
-    function renderTeaser(){
-      const el = document.getElementById('teaser'); if(!el) return;
-      const sample = [...fcData].sort(()=>Math.random()-0.5).slice(0,3);
-      el.innerHTML = '';
-      sample.forEach(it=>{
-        const c = document.createElement('div'); c.className='mini';
-        c.innerHTML = `<b>${it.front}</b><br><span class="muted">${it.back}</span>`;
-        let f=false; c.addEventListener('click',()=>{ f=!f; c.innerHTML = f? `<b>${it.back}</b><br><span class="muted">${it.front}</span>` : `<b>${it.front}</b><br><span class="muted">${it.back}</span>`; });
-        el.appendChild(c);
-      });
-      const btn = document.getElementById('shuffleTeaser');
-      if(btn){ btn.onclick = renderTeaser; }
-    }
+      <div class="card span-4">
+        <h4>Sleep</h4>
+        <ul class="list">
+          <li><b>NREM (deep) sleep:</b> stabilizes & consolidates memories.</li>
+          <li><b>REM sleep:</b> links ideas, processes emotion & creativity.</li>
+          <li><b>Circadian rhythm:</b> ~24h body clock; light sets timing.</li>
+          <li><b>Habits:</b> consistent schedule, limit caffeine, wind-down.</li>
+        </ul>
+        <a class="btn small" href="#quiz" data-quiz="sleep">Quiz me on sleep</a>
+      </div>
+    </div>
+  </section>
 
-    // ----- Daily rotating facts (not in basics) -----
-    const DAILY_FACTS = {
-      0: [
-        "The brain itself has no pain receptors—surgeons can operate on awake patients.",
-        "Signals in myelinated axons can reach ~120 m/s (about 270 mph).",
-        "Your brain briefly suppresses vision during fast eye jumps (saccades) to prevent blur."
-      ],
-      1: [
-        "Smell has a direct route to memory centers, bypassing the thalamus—hence strong smell–memory links.",
-        "Infant brains burn more glucose than adult brains while wiring up connections.",
-        "The \"homunculus\" is a distorted body map on your cortex—hands/lips take huge space."
-      ],
-      2: [
-        "London taxi drivers show larger posterior hippocampi, linked with intense navigation practice.",
-        "Some people experience synesthesia—letters or sounds trigger colors or tastes.",
-        "Your brain can \"fill in\" a blind spot where the optic nerve exits the eye."
-      ],
-      3: [
-        "During REM sleep, your muscles are actively paralyzed to keep you from acting out dreams.",
-        "Reading Braille can activate the visual cortex in blind readers—plasticity in action.",
-        "Two sounds arriving within ~30 ms can be fused into one (temporal resolution limit)."
-      ],
-      4: [
-        "A single neuron can make thousands of synapses; total connections likely exceed 100 trillion.",
-        "Place cells in the hippocampus fire like an internal GPS when you navigate.",
-        "Your pupils change not just with light but with effort and surprise."
-      ],
-      5: [
-        "Most people can’t tickle themselves—your cerebellum cancels the expected sensation.",
-        "The brain uses about 20% of resting energy despite being ~2% of body weight.",
-        "Mirror neurons may help you learn by watching and empathize with others."
-      ],
-      6: [
-        "Language is usually left-dominant, but music and prosody rely more on the right hemisphere.",
-        "Your brain predicts the next sound in speech; surprises spike activity.",
-        "Motion aftereffect: stare at a waterfall, then look away—stationary objects seem to drift upward."
-      ]
-    };
-    (function renderFacts(){
-      const day = new Date().getDay(); // 0=Sun…6=Sat
-      const facts = DAILY_FACTS[day] || [];
-      const ul = document.getElementById('factsList');
-      const stamp = document.getElementById('factsStamp');
-      if(ul){ ul.innerHTML = facts.map(f => `<li>${f}</li>`).join(''); }
-      if(stamp){
-        const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-        stamp.textContent = `Auto-rotates daily • ${days[day]}`;
-      }
-    })();
+  <!-- QUIZZES -->
+  <section id="quiz">
+    <div class="grid">
+      <div class="card span-12">
+        <h3>Quizzes</h3>
+        <div class="quiz-tabs">
+          <button data-qtab="parts" class="active">Parts of the brain</button>
+          <button data-qtab="memory">Memory types</button>
+          <button data-qtab="nt">Neurotransmitters</button>
+          <button data-qtab="sleep">Sleep</button>
+        </div>
 
-    // ----- Init -----
-    document.getElementById('year').textContent = new Date().getFullYear();
-    renderFC(); renderTeaser(); initRoute();
-  </script>
+        <!-- Parts quiz -->
+        <form class="qform" id="q_parts">
+          <div class="quiz-q"><h4>1) Which lobe primarily processes vision?</h4>
+            <label><input type="radio" name="p1" value="Frontal"> Frontal</label><br>
+            <label><input type="radio" name="p1" value="Occipital"> Occipital</label><br>
+            <label><input type="radio" name="p1" value="Parietal"> Parietal</label><br>
+            <div class="result" data-for="p1"></div></div>
+
+          <div class="quiz-q"><h4>2) The hippocampus is crucial for:</h4>
+            <label><input type="radio" name="p2" value="Balance"> Balance</label><br>
+            <label><input type="radio" name="p2" value="New memories"> Forming new memories</label><br>
+            <label><input type="radio" name="p2" value="Vision"> Vision</label><br>
+            <div class="result" data-for="p2"></div></div>
+
+          <div class="quiz-q"><h4>3) Which structure keeps you breathing while asleep?</h4>
+            <label><input type="radio" name="p3" value="Brainstem"> Brainstem</label><br>
+            <label><input type="radio" name="p3" value="Cerebellum"> Cerebellum</label><br>
+            <label><input type="radio" name="p3" value="Amygdala"> Amygdala</label><br>
+            <div class="result" data-for="p3"></div></div>
+
+          <div class="row"><button class="btn" type="submit">Check answers</button>
+            <button class="btn secondary" type="button" data-reset="q_parts">Reset</button></div>
+          <p class="muted small">Best score: <span data-best="q_parts">—</span></p>
+          <hr class="soft">
+        </form>
+
+        <!-- Memory quiz -->
+        <form class="qform" id="q_memory" style="display:none">
+          <div class="quiz-q"><h4>1) Working memory is best described as:</h4>
+            <label><input type="radio" name="m1" value="workspace"> A short-term mental workspace</label><br>
+            <label><input type="radio" name="m1" value="facts"> Facts you know</label><br>
+            <div class="result" data-for="m1"></div></div>
+
+          <div class="quiz-q"><h4>2) Procedural memory example:</h4>
+            <label><input type="radio" name="m2" value="bike"> Riding a bike</label><br>
+            <label><input type="radio" name="m2" value="capital"> Capital of France</label><br>
+            <div class="result" data-for="m2"></div></div>
+
+          <div class="quiz-q"><h4>3) Episodic memory stores:</h4>
+            <label><input type="radio" name="m3" value="events"> Personal events with time/place</label><br>
+            <label><input type="radio" name="m3" value="skills"> Skills/habits</label><br>
+            <div class="result" data-for="m3"></div></div>
+
+          <div class="row"><button class="btn" type="submit">Check answers</button>
+            <button class="btn secondary" type="button" data-reset="q_memory">Reset</button></div>
+          <p class="muted small">Best score: <span data-best="q_memory">—</span></p>
+          <hr class="soft">
+        </form>
+
+        <!-- NT quiz -->
+        <form class="qform" id="q_nt" style="display:none">
+          <div class="quiz-q"><h4>1) Which transmitter is mainly inhibitory?</h4>
+            <label><input type="radio" name="n1" value="GABA"> GABA</label><br>
+            <label><input type="radio" name="n1" value="Dopamine"> Dopamine</label><br>
+            <div class="result" data-for="n1"></div></div>
+
+          <div class="quiz-q"><h4>2) Which supports attention and learning?</h4>
+            <label><input type="radio" name="n2" value="ACh"> Acetylcholine</label><br>
+            <label><input type="radio" name="n2" value="Serotonin"> Serotonin</label><br>
+            <div class="result" data-for="n2"></div></div>
+
+          <div class="quiz-q"><h4>3) Which is tied to reward prediction errors?</h4>
+            <label><input type="radio" name="n3" value="Dopamine"> Dopamine</label><br>
+            <label><input type="radio" name="n3" value="GABA"> GABA</label><br>
+            <div class="result" data-for="n3"></div></div>
+
+          <div class="row"><button class="btn" type="submit">Check answers</button>
+            <button class="btn secondary" type="button" data-reset="q_nt">Reset</button></div>
+          <p class="muted small">Best score: <span data-best="q_nt">—</span></p>
+          <hr class="soft">
+        </form>
+
+        <!-- Sleep quiz -->
+        <form class="qform" id="q_sleep" style="display:none">
+          <div class="quiz-q"><h4>1) Deep NREM sleep mainly helps:</h4>
+            <label><input type="radio" name="s1" value="stabilize"> Stabilize & consolidate memories</label><br>
+            <label><input type="radio" name="s1" value="none"> Only motor skills</label><br>
+            <div class="result" data-for="s1"></div></div>
+
+          <div class="quiz-q"><h4>2) REM sleep is strongly linked with:</h4>
+            <label><input type="radio" name="s2" value="emotion"> Emotion processing & creative linking</label><br>
+            <label><input type="radio" name="s2" value="breathing"> Basic breathing control</label><br>
+            <div class="result" data-for="s2"></div></div>
+
+          <div class="quiz-q"><h4>3) The circadian clock is mainly set by:</h4>
+            <label><input type="radio" name="s3" value="light"> Light cues</label><br>
+            <label><input type="radio" name="s3" value="protein"> Protein intake</label><br>
+            <div class="result" data-for="s3"></div></div>
+
+          <div class="row"><button class="btn" type="submit">Check answers</button>
+            <button class="btn secondary" type="button" data-reset="q_sleep">Reset</button></div>
+          <p class="muted small">Best score: <span data-best="q_sleep">—</span></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FLASHCARDS -->
+  <section id="flash">
+    <div class="grid">
+      <div class="card span-12">
+        <h3>Flashcards</h3>
+        <div id="fc" class="row"></div>
+        <p class="small muted">Click a card to flip.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE -->
+  <section id="interactive">
+    <div class="grid">
+      <div class="card span-12">
+        <h3>Interactive brain map</h3>
+        <div class="diagram">
+          <svg viewBox="0 0 600 360" width="100%" height="340" aria-label="brain diagram">
+            <ellipse cx="300" cy="170" rx="260" ry="140" fill="#121b33" stroke="#1f2a44"/>
+            <a href="javascript:void(0)" data-part="Frontal lobe: planning, decisions, speech (Broca’s)">
+              <ellipse cx="210" cy="160" rx="110" ry="90" fill="#1c2b4d" stroke="#2b3b66"/>
+            </a>
+            <a href="javascript:void(0)" data-part="Parietal lobe: touch, spatial maps, attention">
+              <ellipse cx="310" cy="120" rx="100" ry="70" fill="#1a2a48" stroke="#2b3b66"/>
+            </a>
+            <a href="javascript:void(0)" data-part="Temporal lobe: hearing, language (Wernicke’s), memory">
+              <ellipse cx="320" cy="210" rx="120" ry="70" fill="#172540" stroke="#2b3b66"/>
+            </a>
+            <a href="javascript:void(0)" data-part="Occipital lobe: vision processing">
+              <ellipse cx="420" cy="170" rx="90" ry="70" fill="#15223c" stroke="#2b3b66"/>
+            </a>
+            <a href="javascript:void(0)" data-part="Hippocampus: forms new episodic memories">
+              <circle cx="300" cy="190" r="15" fill="#34d399"/>
+            </a>
+            <a href="javascript:void(0)" data-part="Amygdala: detects threat/emotion quickly">
+              <circle cx="340" cy="190" r="12" fill="#f87171"/>
+            </a>
+            <a href="javascript:void(0)" data-part="Cerebellum: balance & timing">
+              <ellipse cx="470" cy="230" rx="60" ry="40" fill="#1b2948" stroke="#2b3b66"/>
+            </a>
+            <a href="javascript:void(0)" data-part="Brainstem: breathing, heart rate, arousal">
+              <rect x="270" y="250" width="20" height="40" fill="#24324f" />
+            </a>
+          </svg>
+          <div class="info" id="brainInfo">Click a region to learn more.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESOURCES -->
+  <section id="resources">
+    <div class="grid">
+      <div class="card span-12">
+        <h3>Quick summaries</h3>
+        <div class="grid">
+          <div class="card span-3">
+            <h4>Parts of the brain</h4>
+            <p class="muted">Frontal (plan/speak), Parietal (touch/space), Temporal (hearing/lang/memory), Occipital (vision), plus Hippocampus, Amygdala, Cerebellum, Brainstem.</p>
+            <a class="btn small" href="#quiz" data-quiz="parts">Practice quiz</a>
+          </div>
+          <div class="card span-3">
+            <h4>Memory types</h4>
+            <p class="muted">Working holds info briefly; Episodic = events; Semantic = facts; Procedural = skills. Sleep & spaced retrieval strengthen them.</p>
+            <a class="btn small" href="#quiz" data-quiz="memory">Practice quiz</a>
+          </div>
+          <div class="card span-3">
+            <h4>Neurotransmitters</h4>
+            <p class="muted">Dopamine (motivation/reward), Serotonin (mood/sleep), ACh (attention/learning), GABA (inhibition).</p>
+            <a class="btn small" href="#quiz" data-quiz="nt">Practice quiz</a>
+          </div>
+          <div class="card span-3">
+            <h4>Sleep</h4>
+            <p class="muted">Deep NREM stabilizes memories; REM links ideas & emotion. Keep a consistent schedule; light sets your 24-hour clock.</p>
+            <a class="btn small" href="#quiz" data-quiz="sleep">Practice quiz</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card span-12">
+        <h3>Extra MCQ practice</h3>
+        <ol class="list">
+          <li>Which lobe is most involved in impulse control and planning? <i>(Frontal)</i></li>
+          <li>Which habit after studying most improves long-term recall? <i>(Sleep + spaced retrieval)</i></li>
+          <li>Anxiolytics that potentiate which transmitter increase inhibition? <i>(GABA)</i></li>
+          <li>Which memory stores the fact that Paris is the capital of France? <i>(Semantic)</i></li>
+          <li>Which sleep stage is most tied to creative recombination? <i>(REM)</i></li>
+        </ol>
+        <p class="small muted">Tip: convert these into your own flashcards to double-learn.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="grid">
+      <div class="card span-12">
+        <h3>About</h3>
+        <p class="muted">ExploreEd (Brain Explorer) is a student-built site that turns complex neuroscience into bite-size lessons, interactives, and self-checks. If you spot an error or want a new topic, reach out!</p>
+        <p><b>Contact:</b> <a href="tel:+15128087438">(512) 808-7438</a> · <a href="mailto:sambithmanoharreddy@gmail.com">sambithmanoharreddy@gmail.com</a></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="row" style="justify-content:space-between;align-items:center;flex-wrap:wrap">
+      <span class="small">© <span id="year"></span> Brain Explorer</span>
+      <div class="row small">
+        <a href="#about">About</a><span class="muted">·</span>
+        <a href="#resources">Resources</a><span class="muted">·</span>
+        <a href="mailto:sambithmanoharreddy@gmail.com">Contact</a>
+      </div>
+      <span class="small">Built with plain HTML/CSS/JS — easy to host anywhere.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ---------- Tabs / routing ---------- */
+const tabs=document.querySelectorAll('.tab-btn');
+const sections=[...document.querySelectorAll('main section')];
+function show(tab){sections.forEach(s=>s.style.display=s.id===tab?'block':'none');tabs.forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));if(location.hash!=='#'+tab){history.replaceState(null,'','#'+tab)}}
+tabs.forEach(btn=>btn.addEventListener('click',()=>show(btn.dataset.tab)));
+document.querySelectorAll('[data-nav]').forEach(x=>x.addEventListener('click',()=>show(x.dataset.nav)));
+function initRoute(){const h=(location.hash||'#home').slice(1);const valid=sections.some(s=>s.id===h)?h:'home';show(valid)}
+window.addEventListener('hashchange',initRoute);
+
+/* ---------- Learn: quick search (optional) ---------- */
+const topics=[{term:'memory',text:'Hippocampus helps form new memories; sleep consolidates them.'},{term:'dopamine',text:'Motivation & reward prediction.'},{term:'sleep',text:'Deep sleep stabilizes; REM links ideas.'},{term:'amygdala',text:'Rapid emotion/threat detection.'},{term:'cerebellum',text:'Balance, timing, fine movement.'}];
+
+/* ---------- Flashcards data (4 topics) ---------- */
+const fcData=[
+  // Parts
+  {front:'Frontal lobe',back:'Planning, decisions, self-control, speech (Broca’s).'},
+  {front:'Parietal lobe',back:'Touch, spatial maps, attention to space.'},
+  {front:'Temporal lobe',back:'Hearing, language (Wernicke’s), memory.'},
+  {front:'Occipital lobe',back:'Vision processing.'},
+  {front:'Hippocampus',back:'Forms new episodic memories.'},
+  {front:'Amygdala',back:'Detects threat/emotion quickly.'},
+  {front:'Cerebellum',back:'Balance, timing, fine movement.'},
+  {front:'Brainstem',back:'Breathing, heart rate, arousal.'},
+  // Memory
+  {front:'Working memory',back:'Short-term mental workspace.'},
+  {front:'Episodic memory',back:'Personal events with time/place.'},
+  {front:'Semantic memory',back:'Facts/knowledge (words, capitals).'},
+  {front:'Procedural memory',back:'Skills/habits (e.g., riding a bike).'},
+  // NTs
+  {front:'Dopamine',back:'Motivation; reward prediction error; movement.'},
+  {front:'Serotonin',back:'Mood, sleep, appetite, homeostasis.'},
+  {front:'Acetylcholine',back:'Attention & learning; neuromuscular junction.'},
+  {front:'GABA',back:'Main inhibitory transmitter.'},
+  // Sleep
+  {front:'NREM (deep) sleep',back:'Stabilizes & consolidates memories.'},
+  {front:'REM sleep',back:'Creative linking & emotion processing.'},
+  {front:'Circadian rhythm',back:'~24h body clock set mainly by light.'},
+  {front:'Melatonin',back:'Hormone that signals darkness & sleepiness.'}
+];
+const fcWrap=document.getElementById('fc');
+function renderFC(){if(!fcWrap) return; fcWrap.innerHTML=''; fcData.forEach(it=>{const card=document.createElement('div');card.className='card span-3';card.style.cursor='pointer';let flipped=false;card.innerHTML=`<h4>${it.front}</h4>`;card.addEventListener('click',()=>{flipped=!flipped;card.innerHTML=flipped?`<h4>${it.back}</h4>`:`<h4>${it.front}</h4>`});fcWrap.appendChild(card);});}
+function renderTeaser(){const el=document.getElementById('teaser');if(!el) return;const sample=[...fcData].sort(()=>Math.random()-0.5).slice(0,3);el.innerHTML='';sample.forEach(it=>{const c=document.createElement('div');c.className='mini';let f=false;c.innerHTML=`<b>${it.front}</b>`;c.addEventListener('click',()=>{f=!f;c.innerHTML=f?`<b>${it.back}</b>`:`<b>${it.front}</b>`});el.appendChild(c);});const btn=document.getElementById('shuffleTeaser');if(btn){btn.onclick=renderTeaser;}}
+
+/* ---------- Daily rotating facts ---------- */
+const DAILY_FACTS={0:["The brain itself has no pain receptors—surgeons can operate on awake patients.","Signals in myelinated axons can reach ~120 m/s (≈270 mph).","Your brain briefly suppresses vision during saccades to prevent blur."],1:["Smell has a direct route to memory centers, bypassing the thalamus.","Infant brains burn more glucose than adult brains while wiring connections.","The cortical ‘homunculus’ gives hands/lips huge real estate."],2:["London taxi drivers show larger posterior hippocampi from navigation practice.","Some people experience synesthesia—letters or sounds trigger colors/tastes.","Your brain ‘fills in’ the blind spot where the optic nerve exits."],3:["During REM sleep, your muscles are paralyzed to prevent acting out dreams.","Reading Braille can activate visual cortex in blind readers.","Two sounds within ~30 ms can fuse into one (temporal limit)."],4:["A single neuron can make thousands of synapses; connections likely exceed 100T.","Hippocampal ‘place cells’ fire like an internal GPS.","Pupils change with effort and surprise, not just light."],5:["Most people can’t tickle themselves—cerebellum cancels predicted touch.","The brain uses ~20% of resting energy despite being ~2% of body weight.","Mirror neurons may help learning-by-watching and empathy."],6:["Language tends to be left-dominant; prosody/music often right-leaning.","Your brain predicts the next sound; surprises spike activity.","Motion aftereffect: stare at a waterfall, then walls seem to drift up."]};
+(function renderFacts(){const day=new Date().getDay();const facts=DAILY_FACTS[day]||[];const ul=document.getElementById('factsList');const stamp=document.getElementById('factsStamp');if(ul){ul.innerHTML=facts.map(f=>`<li>${f}</li>`).join('')}if(stamp){const d=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];stamp.textContent=`Auto-rotates daily • ${d[day]}`}})();
+
+/* ---------- Learn helpers ---------- */
+document.querySelectorAll('[data-quiz]').forEach(b=>b.addEventListener('click',()=>{show('quiz');switchQuiz(b.dataset.quiz);}))
+
+/* ---------- Quiz switching ---------- */
+const tabsQ=[...document.querySelectorAll('[data-qtab]')];
+function switchQuiz(key){tabsQ.forEach(t=>t.classList.toggle('active',t.dataset.qtab===key));['q_parts','q_memory','q_nt','q_sleep'].forEach(id=>document.getElementById(id).style.display=(id==='q_'+key?'block':'none'))}
+tabsQ.forEach(t=>t.addEventListener('click',()=>switchQuiz(t.dataset.qtab)));
+
+/* ---------- Quiz grading ---------- */
+const ANSWERS={
+  q_parts:{p1:'Occipital',p2:'New memories',p3:'Brainstem'},
+  q_memory:{m1:'workspace',m2:'bike',m3:'events'},
+  q_nt:{n1:'GABA',n2:'ACh',n3:'Dopamine'},
+  q_sleep:{s1:'stabilize',s2:'emotion',s3:'light'}
+};
+document.querySelectorAll('.qform').forEach(form=>{
+  form.addEventListener('submit',e=>{
+    e.preventDefault();
+    let score=0,total=0;
+    Object.entries(ANSWERS[form.id]).forEach(([name,correct])=>{
+      total++;
+      const chosen=form.querySelector(`input[name="${name}"]:checked`);
+      const box=form.querySelector(`.result[data-for="${name}"]`);
+      if(!chosen){ if(box){box.textContent='Pick an answer';box.style.color='#f59e0b'}; return; }
+      if(chosen.value===correct){score++; if(box){box.textContent='Correct!';box.style.color='#34d399'}}
+      else{ if(box){box.textContent=`Correct: ${correct}`;box.style.color='#f87171'} }
+    });
+    const bestKey='best_'+form.id;
+    const prev=+localStorage.getItem(bestKey)||0;
+    if(score>prev) localStorage.setItem(bestKey,String(score));
+    const bestSpan=document.querySelector(`[data-best="${form.id}"]`);
+    if(bestSpan) bestSpan.textContent=(localStorage.getItem(bestKey)||score)+'/'+Object.keys(ANSWERS[form.id]).length;
+  });
+  const resetBtn=document.querySelector(`[data-reset="${form.id}"]`);
+  if(resetBtn){resetBtn.addEventListener('click',()=>{form.reset();form.querySelectorAll('.result').forEach(r=>r.textContent='')})}
+});
+
+/* ---------- Interactive brain info ---------- */
+document.querySelectorAll('svg a').forEach(a=>{
+  a.addEventListener('click',()=>{document.getElementById('brainInfo').textContent=a.getAttribute('data-part')})
+});
+
+/* ---------- Init ---------- */
+document.getElementById('year').textContent=new Date().getFullYear();
+renderFC();renderTeaser();initRoute();switchQuiz('parts');
+</script>
 </body>
 </html>
+
