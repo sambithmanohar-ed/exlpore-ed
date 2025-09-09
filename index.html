@@ -720,6 +720,11 @@ const tabs=[...document.querySelectorAll('.tab-btn')];
 const sections=[...document.querySelectorAll('main section')];
 function show(tab){sections.forEach(s=>s.style.display=s.id===tab?'block':'none');tabs.forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));if(location.hash!=='#'+tab){history.replaceState(null,'','#'+tab)}}
 tabs.forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
+  // Make the big "Start learning" / "Try a quiz" buttons work
+document.querySelectorAll('[data-nav]').forEach(b => {
+  b.addEventListener('click', () => show(b.dataset.nav));
+});
+
 function initRoute(){const t=(location.hash||'#home').slice(1);show(sections.some(s=>s.id===t)?t:'home')}
 window.addEventListener('hashchange',initRoute);
 
