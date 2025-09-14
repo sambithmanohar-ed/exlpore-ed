@@ -706,6 +706,18 @@ footer{padding:28px 18px;border-top:1px solid var(--border);color:#9cc4cf}
 
 <!-- ↓↓↓ Paste this whole block right ABOVE </body> ↓↓↓ -->
 <style>
+  <!-- add these lines inside the SAME <style> as your footer styles -->
+.site-footer{
+  margin-top: 0;      /* was 24px — remove the big gap */
+  padding-top: 1px;   /* prevents margin-collapsing from previous section */
+}
+
+/* remove bottom margin from the last piece of content before the footer */
+body > *:not(footer):last-child {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
   /* Footer layout & spacing */
   .site-footer{
     border-top:1px solid rgba(255,255,255,.08);
