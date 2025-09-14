@@ -704,15 +704,30 @@ footer{padding:28px 18px;border-top:1px solid var(--border);color:#9cc4cf}
 
 <footer>
   <div class="container">
-    <div class="row" style="justify-content:space-between;align-items:center;flex-wrap:wrap">
+    <div class="row" style="justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
       <span class="small">© <span id="year"></span> Brain Explorer</span>
+
       <div class="row small" style="gap:8px">
-        <a href="#about">About</a> · <a href="#resources">Resources</a> · <span>Contact: (512) 808-7438 · sambithmanoharreddy@gmail.com</span>
+        <a href="#about">About</a> · <a href="#resources">Resources</a> · 
+        <span>Contact: (512) 808-7438 · sambithmanoharreddy@gmail.com</span>
       </div>
-      <span class="small">Built with HTML/CSS/JS — hosted on Vercel.</span>
+
+      <div class="row small" style="gap:8px;align-items:center">
+        <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" aria-label="Creative Commons BY-NC 4.0 License">
+          <img src="https://licensebuttons.net/l/by-nc/4.0/88x31.png" alt="CC BY-NC 4.0" style="height:22px;width:auto;vertical-align:middle;">
+        </a>
+        <span>Except where noted, content licensed under <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a>.</span>
+      </div>
+
+      <span class="small">Built with HTML/CSS/JS — hosted on Cloudflare.</span>
     </div>
   </div>
 </footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
 
 <script>
 /* ---------- tabs / routing ---------- */
